@@ -1,22 +1,18 @@
 import express from 'express'
-import Bodyparser from 'body-parser'
+import bodyParser from 'body-parser'
+import path from 'path'
 import {config} from './config.js'
 
 const app = express()
+const __dirname = path.resolve();
 
-app.use()
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../client/build')));
 
-app.use((req, res, next)=>{
-
+app.get('*', (req, res)=>{
+    res.sendFile(path.join(__dirname, '../client/build/index.html'))
 })
-
-app.use((error, req, res, next)=>{
-
-})
-
-// app.get('/', (req, res)=>{
-
-// })
 
 app.listen(config.http.port, ()=>{
     console.log("study dairy start!!!")
