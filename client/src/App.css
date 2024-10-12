@@ -1,38 +1,185 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* html:{
+} */
+
+:root {
+  color-scheme: light dark;
+  /* color */
+  --sd-white: #fff;
+  --sd-black: #000;
+  --sd-gray: rgba(181, 177, 177, 0.959);
+  --sd-hover-transparent: rgba(0, 0, 0, 0.1);
+
+  /* 옆 슬라이드 */
+  --sd-side-width: 25%;
+  --sd-side-top-height: 23%;
+
+  /* 폴더 검색 */
+  --sd-search-width: 85%;
+  --sd-search-height: 37px;
+
+  --sd-search-input-padding: 0px 12px;
+  --sd-searchBtn-width: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.sd-all_container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* 옆 사이드 부분 */
+.sd-side_container {
+  width: var(--sd-side-width);
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: light-dark(blue, green) */ /* 다크모드 적용부분 */
+  border-right: 1px solid var(--sd-black); /* 다크모드 적용부분 */
+}
+
+.sd-side_top,
+.sd-folder_list_container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.sd-side_top {
+  height: var(--sd-side-top-height);
+  padding-top: 14px;
+  justify-content: space-between;
+}
+
+.sd-folder_list_container {
+  height: calc(100% - var(--sd-side-top-height));
+}
+
+/* 폴더검색 부분 */
+.sd-f_search_container {
+  width: var(--sd-search-width);
+  display: flex;
+  /* border:  1px solid black; */
+  height: var(--sd-search-height);
+  position: relative;
+}
+
+.sd-f_search_form {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--sd-gray); /* 다크모드 적용부분 */
+  border-radius: 20px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sd-f_search_form div {
+  height: 100%;
+}
+
+.sd-f_search_inputbox {
+  flex: 1;
+}
+
+.sd-f_search_btnbox {
+  width: var(--sd-searchBtn-width);
+}
+
+.sd-f_search_input,
+.sd-f_search_btn {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  outline: none;
+  background-color: inherit;
+  border: none;
+}
+
+.sd-f_search_input {
+  font-size: 12px;
+  padding: var(--sd-search-input-padding);
+  color: var(--sd-black); /* 다크모드 적용부분 */
+}
+
+.sd-f_search_btn {
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  cursor: pointer;
+  color: var(--sd-gray);
 }
 
-.App-link {
-  color: #61dafb;
+.sd-f_search_btn:hover {
+  color: var(--sd-black); /* 다크모드 적용부분 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sd-f_search_result {
+  position: absolute;
+  width: 100%;
+  background-color: red;
+  border-radius: 5px;
+  padding: 4px 0px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  left: 0;
+  z-index: 123124;
+  top: var(--sd-search-height);
+}
+
+/* 폴더추가 */
+.sd-f_add_container {
+  width: 100%;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 5px 5px;
+  /* margin-top: 20px; */
+}
+
+.sd-f_add_container button {
+  border: none;
+  background-color: inherit;
+  outline: none;
+  color: var(--sd-black); /* 다크모드 적용부분   */
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 16px;
+}
+
+.sd-f_add_container button:hover {
+  background-color: var(--sd-hover-transparent);
+}
+
+/* 메모 작성 부분 */
+.sd-main_container {
+  width: calc(100% - var(--sd-side-width));
+  height: 100%;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
 }
