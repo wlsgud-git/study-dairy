@@ -1,60 +1,13 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* html:{
-} */
-
-:root {
-  color-scheme: light dark;
-  /* color */
-  --sd-white: #fff;
-  --sd-black: #000;
-  --sd-gray: rgba(181, 177, 177, 0.959);
-  --sd-hover-transparent: rgba(0, 0, 0, 0.1);
-
-  /* 옆 슬라이드 */
-  --sd-side-width: 25%;
-  --sd-side-top-height: 23%;
-
-  /* 폴더 검색 */
-  --sd-search-width: 85%;
-  --sd-search-height: 37px;
-
-  --sd-search-input-padding: 0px 12px;
-  --sd-searchBtn-width: 40px;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-.sd-all_container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
+@import url("index.css");
 
 /* 옆 사이드 부분 */
 .sd-side_container {
-  width: var(--sd-side-width);
-  height: 100%;
+  width: 100%;
+  max-width: var(--sd-side-width);
+  height: 100vh;
   flex-direction: column;
   align-items: center;
-  /* background-color: light-dark(blue, green) */ /* 다크모드 적용부분 */
-  border-right: 1px solid var(--sd-black); /* 다크모드 적용부분 */
+  border-right: 1px solid var(--theme-diff-color);
 }
 
 .sd-side_top,
@@ -88,7 +41,7 @@ code {
   display: flex;
   width: 100%;
   height: 100%;
-  border: 1px solid var(--sd-gray); /* 다크모드 적용부분 */
+  border: 1px solid var(--theme-diff-color); /* 다크모드 적용부분 */
   border-radius: 20px;
   overflow: hidden;
   align-items: center;
@@ -121,7 +74,7 @@ code {
 .sd-f_search_input {
   font-size: 12px;
   padding: var(--sd-search-input-padding);
-  color: var(--sd-black); /* 다크모드 적용부분 */
+  color: var(--theme-font-color);
 }
 
 .sd-f_search_btn {
@@ -131,7 +84,7 @@ code {
 }
 
 .sd-f_search_btn:hover {
-  color: var(--sd-black); /* 다크모드 적용부분 */
+  color: var(--theme-font-color);
 }
 
 .sd-f_search_result {
@@ -152,7 +105,7 @@ code {
 /* 폴더추가 */
 .sd-f_add_container {
   width: 100%;
-  border: 1px solid black;
+  border: 1px solid var(--theme-diff-color);
   display: flex;
   align-items: center;
   justify-content: end;
@@ -164,7 +117,7 @@ code {
   border: none;
   background-color: inherit;
   outline: none;
-  color: var(--sd-black); /* 다크모드 적용부분   */
+  color: var(--theme-font-color); /* 다크모드 적용부분   */
   cursor: pointer;
   border-radius: 50%;
   padding: 6px;
@@ -172,14 +125,34 @@ code {
 }
 
 .sd-f_add_container button:hover {
-  background-color: var(--sd-hover-transparent);
+  background-color: var(--theme-hover-transparent);
 }
 
-/* 메모 작성 부분 */
-.sd-main_container {
-  width: calc(100% - var(--sd-side-width));
-  height: 100%;
-  border: 1px solid red;
+.sd-folder_add_box {
+  width: 100%;
+  height: 40px;
+  background-color: inherit;
+  /* border: 1px solid black; */
+}
+
+.sd-folder_add_form,
+.sd-folder_add_input {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: inherit;
+  border: 1px solid var(--theme-diff-color);
+}
+
+.sd-current_making {
+  color: var(--theme-font-color);
+  margin: 0px 8px;
+}
+
+.sd-folder_add_input {
+  outline: none;
+  color: var(--theme-font-color);
+  padding: 0px 6px;
+  border: none;
 }

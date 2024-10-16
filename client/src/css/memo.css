@@ -1,0 +1,33 @@
+@import url("index.css");
+
+/* 메모 작성 부분 */
+.sd-main_container {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.sd-main_top {
+  width: 100%;
+  height: var(--sd-main-top-height);
+  border-bottom: 1px solid var(--theme-diff-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 7px;
+}
+
+.sd-main_top button {
+  background-color: inherit;
+  color: var(--theme-font-color);
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.sd-main_top button:hover {
+  background-color: var(--theme-hover-transparent);
+}

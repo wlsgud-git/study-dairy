@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* color */
+  --sd-white: #fff;
+  --sd-black: #000;
+  --sd-gray: rgba(181, 177, 177, 0.959);
+
+  /* 옆 슬라이드 */
+  --sd-side-width: 243px;
+  --sd-side-top-height: 21%;
+
+  /* 폴더 검색 */
+  --sd-search-width: 85%;
+  --sd-search-height: 37px;
+  --sd-search-input-padding: 0px 12px;
+  --sd-searchBtn-width: 40px;
+
+  /* 메인 슬라이드 */
+  --sd-main-top-height: 36px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body[data-theme="light"] {
+  --theme-background-color: #fff;
+  --theme-diff-color: #212121;
+  --theme-font-color: #212121;
+  --theme-hover-transparent: rgba(0, 0, 0, 0.1);
+}
+body[data-theme="dark"] {
+  --theme-background-color: #212121;
+  --theme-font-color: #fff;
+  --theme-diff-color: #fff;
+  --theme-hover-transparent: rgba(255, 255, 255, 0.3);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
