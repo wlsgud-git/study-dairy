@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import "./css/App.css";
-// import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import Slide from "./components/slide.js";
 import Memo from "./components/memo.js";

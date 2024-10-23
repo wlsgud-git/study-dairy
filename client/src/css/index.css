@@ -11,7 +11,7 @@
   --sd-gray: rgba(181, 177, 177, 0.959);
 
   /* 옆 슬라이드 */
-  --sd-side-width: 243px;
+  --sd-side-width: 213px;
   --sd-side-top-height: 21%;
 
   /* 폴더 검색 */
@@ -22,6 +22,7 @@
 
   /* 메인 슬라이드 */
   --sd-main-top-height: 36px;
+  --sd-current-memo-height: 30px;
 }
 
 body {

@@ -1,25 +1,17 @@
 import "../css/slide.css";
 
+import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
-function Slide() {
-  let DicInput = useRef(null);
-  let [DicInfo, setDicInfo] = useState({
-    state: false,
-    value: "",
-    making: "",
-  });
-
-  async function makeFolder() {}
-
-  useEffect(() => {
-    if (DicInfo.state && DicInput.current) DicInput.current.focus();
-  }, [DicInfo.state]);
-
-  async function makeDicrectory() {}
+function Slide({ folderService }) {
+  let { Menu, setMenu } = useStatus();
 
   return (
-    <div className="sd-side_container">
+    <div
+      className="sd-side_container"
+      style={{ display: Menu.display[0] ? "flex" : "none" }}
+      onClick={() => setMenu((c) => ({ ...c, focusing: true }))}
+    >
       {/* 사이드 검색및 폴더추가 */}
       <div className="sd-side_top">
         {/* 파일검색 */}
@@ -44,56 +36,19 @@ function Slide() {
         </div>
         {/* 폴더추가 */}
         <div className="sd-f_add_container">
-          <button
-            className="sd-folder_add_btn"
-            title="폴더추가"
-            onClick={() =>
-              setDicInfo((c) => ({ ...c, state: true, making: "folder" }))
-            }
-          >
+          {/* 파일 추가 버튼 */}
+          <button className="sd-folder_add_btn" title="파일추가">
+            <i className="fa-solid fa-file-circle-plus"></i>
+          </button>
+          {/* 폴더 추가 버튼 */}
+          <button className="sd-folder_add_btn" title="폴더추가">
             <i className="fa-solid fa-folder-plus"></i>
           </button>
         </div>
       </div>
 
       {/* 사이드 폴더 리스트 */}
-      <ul className="sd-folder_list_container">
-        <div
-          className="sd-folder_add_box"
-          style={{ display: DicInfo.state ? "flex" : "none" }}
-        >
-          <form
-            className="sd-folder_add_form"
-            onSubmit={() => makeDicrectory()}
-          >
-            <span className="sd-current_making">
-              <i
-                className="fa-solid fa-folder"
-                style={{
-                  display: DicInfo.making == "folder" ? "block" : "none",
-                }}
-              ></i>
-              <i
-                className="fa-solid fa-file"
-                style={{
-                  display: DicInfo.making == "file" ? "block" : "none",
-                }}
-              ></i>
-            </span>
-            <input
-              className="sd-folder_add_input"
-              ref={DicInput}
-              value={DicInfo.value}
-              onChange={(e) =>
-                setDicInfo((c) => ({ ...c, value: e.target.value }))
-              }
-              onBlur={(e) =>
-                setDicInfo((c) => ({ ...c, state: false, value: "" }))
-              }
-            />
-          </form>
-        </div>
-      </ul>
+      <ul className="sd-folder_list_container"></ul>
     </div>
   );
 }

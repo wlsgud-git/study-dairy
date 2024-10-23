@@ -29,7 +29,6 @@ app.use((req, res, next) => {
   next();
 });
 app.use((error, req, res, next) => {
-  console.log(err);
   res.status(400).json({ message: err.message });
 });
 
@@ -38,5 +37,5 @@ app.get("*", (req, res) => {
 });
 
 app.listen(config.http.port, () => {
-  console.log("study dairy start!!!");
+  console.log(`study dairy start!!! with ${config.http.port} port`);
 });

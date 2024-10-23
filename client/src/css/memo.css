@@ -31,3 +31,9 @@
 .sd-main_top button:hover {
   background-color: var(--theme-hover-transparent);
 }
+
+.sd-current_studing_list {
+  width: 100%;
+  height: var(--sd-current-memo-height);
+  border-bottom: 1px solid var(--theme-diff-color);
+}

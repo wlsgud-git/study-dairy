@@ -4,6 +4,8 @@ import "./css/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import { StatusProvider } from "./context/status.js";
+
 import { HttpClient } from "./network/http.js";
 import { FolderService } from "./service/folder.js";
 import { FileService } from "./service/file.js";
@@ -17,7 +19,9 @@ const fileService = new FileService(httpClient);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App folderService={folderService} />
+    <StatusProvider>
+      <App folderService={folderService} />
+    </StatusProvider>
   </React.StrictMode>
 );
 

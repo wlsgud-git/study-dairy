@@ -156,3 +156,9 @@
   padding: 0px 6px;
   border: none;
 }
+
+@media (max-width: 640px) {
+  .sd-side_container {
+    max-width: 100%;
+  }
+}
