@@ -20,7 +20,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <StatusProvider>
-      <App folderService={folderService} />
+      <App folderService={folderService} fileService={fileService} />
     </StatusProvider>
   </React.StrictMode>
 );

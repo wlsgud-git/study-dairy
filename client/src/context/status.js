@@ -12,30 +12,39 @@ export const StatusContext = createContext();
 export const StatusProvider = ({ children }) => {
   let [WindowSize, setWindowSize] = useState(window.innerWidth);
   let [Darkmode, setDarkmode] = useState(false);
+  let [DicInfo, setDicInfo] = useState({
+    id: 0,
+    inputState: false,
+    // 폴더는 true 파일은 false
+    dic: true,
+  });
 
   let [Menu, setMenu] = useState({
     menu: true,
     focusing: true,
-    adapt: "",
-    display: [true, true],
+    adapt: false,
+    display: true,
   });
 
+  function dicStatus(dic) {
+    setDicInfo((c) => ({ ...c, inputState: !DicInfo.inputState, dic: dic }));
+  }
+
+  // 윈도우 사이즈가 바뀔때
   useEffect(() => {
-    if (WindowSize <= 640) {
-      setMenu((c) => ({
-        ...c,
-        adapt: false,
-        menu: Menu.focusing,
-        display: Menu.focusing ? [true, false] : [false, true],
-      }));
-    } else {
+    if (WindowSize <= 640)
       setMenu((c) => ({
         ...c,
         adapt: true,
-        display: Menu.menu ? [true, true] : [false, true],
+        display: Menu.adapt ? Menu.focusing : Menu.menu,
       }));
-    }
-  }, [WindowSize, Menu]);
+    else
+      setMenu((c) => ({
+        ...c,
+        adapt: false,
+        display: Menu.adapt ? Menu.focusing : Menu.menu,
+      }));
+  }, [WindowSize]);
 
   // 다크모드 이벤트
   useEffect(() => {
@@ -58,14 +67,17 @@ export const StatusProvider = ({ children }) => {
       // variable
       Darkmode,
       Menu,
+      DicInfo,
 
       // set variable function
       setDarkmode,
       setMenu,
+      setDicInfo,
 
       // use function
+      dicStatus,
     }),
-    [Darkmode, Menu]
+    [Darkmode, Menu, DicInfo]
   );
 
   return (

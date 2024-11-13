@@ -3,7 +3,7 @@ export class FolderService {
     this.http = http;
   }
 
-  getFolders() {
+  async getFolders() {
     return this.http.httpFetch("/folders", {
       method: "get",
     });
@@ -16,7 +16,7 @@ export class FolderService {
     });
   }
 
-  updateFolder() {}
+  async updateFolder() {}
 
-  deleteFolder() {}
+  async deleteFolder() {}
 }
