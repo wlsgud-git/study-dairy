@@ -1,18 +1,26 @@
 import { dbPlay } from "../db/db.js";
 
-export class FolderData {
+class FolderData {
   constructor() {}
 
-  async getFolders() {
+  // insturucture = [id, full_name, name, folder_id]
+  // get data = [full_name, name, folder_id]
+
+  async getFolders(fid) {
     try {
-      let query = "select * from folder";
-    } catch (err) {}
+      let query =
+        "select * from folders where id >= 1 and folder_id=$1 order by name asc";
+      const data = [fid];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
   }
 
-  async createFolder(title) {
+  async createFolder(info) {
     try {
-      let query = "insert into folder values($1)";
-      const data = [title];
+      let query = "insert into folders values()";
+      const data = [];
       return await dbPlay(query, data);
     } catch (err) {
       throw err;
@@ -21,3 +29,5 @@ export class FolderData {
   async modifyFolder() {}
   async deleteFolder() {}
 }
+
+export const fol = new FolderData();

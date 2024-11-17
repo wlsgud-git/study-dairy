@@ -9,6 +9,7 @@ export class HttpClient {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      withCredentials: true,
     });
   }
 
@@ -25,7 +26,8 @@ export class HttpClient {
 
     try {
       const res = await this.client(req);
-      return res.data;
+      const data = await res.data;
+      return data;
     } catch (err) {
       console.log(err.response.data);
       return;

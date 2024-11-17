@@ -3,13 +3,13 @@ export class FolderService {
     this.http = http;
   }
 
-  async getFolders() {
-    return this.http.httpFetch("/folders", {
+  async getFolders(fid) {
+    return this.http.httpFetch(`/folders?fid=${fid}`, {
       method: "get",
     });
   }
 
-  async makeFolder(data) {
+  async createFolder(data) {
     return this.http.httpFetch("/folder", {
       method: "post",
       body: data,

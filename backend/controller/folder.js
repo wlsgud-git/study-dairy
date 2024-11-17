@@ -1,8 +1,13 @@
-import { FolderData } from "../data/folder.js";
+import { fol } from "../data/folder.js";
 
 export async function getFolders(req, res) {
   try {
-  } catch (err) {}
+    let fid = req.query["fid"];
+    let data = await fol.getFolders(fid);
+    return res.status(200).json(data);
+  } catch (err) {
+    throw err;
+  }
 }
 export async function createFolder(req, res) {
   try {

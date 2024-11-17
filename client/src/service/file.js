@@ -3,8 +3,8 @@ export class FileService {
     this.http = http;
   }
 
-  async getFiles() {
-    return this.http.httpFetch("/files", {
+  async getFiles(fid) {
+    return this.http.httpFetch(`/files?fid=${fid}`, {
       method: "get",
     });
   }

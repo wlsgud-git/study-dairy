@@ -19,7 +19,7 @@ const fileService = new FileService(httpClient);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <StatusProvider>
+    <StatusProvider folderService={folderService} fileService={fileService}>
       <App folderService={folderService} fileService={fileService} />
     </StatusProvider>
   </React.StrictMode>
