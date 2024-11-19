@@ -1,6 +1,7 @@
 class Node {
-  constructor(data) {
+  constructor(data, info) {
     this.data = data;
+    this.info = info;
     this.parent = null;
     this.tf = false;
     this.left = null;
@@ -280,9 +281,9 @@ export class Rbtree {
     }
   }
 
-  insert(data) {
+  insert(data, info) {
     this.length += 1;
-    let newNode = new Node(data);
+    let newNode = new Node(data, info);
 
     // 일단 최상위 노드가 없으면 먼저 넣고 끝낸다
     if (this.head == null) {

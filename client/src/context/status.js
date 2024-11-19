@@ -39,12 +39,12 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
   );
 
   // 사전 생성시 해당 폴더의 인풋에 포커스 이벤트
-  useEffect(() => {
-    const node = document.querySelector(".sd-folder_list_container");
-    let nodeInput = node.children[DicInfo.id].querySelector("input");
+  // useEffect(() => {
+  //   const node = document.querySelector(".sd-folder_list_container");
+  //   let nodeInput = node.children[DicInfo.id].querySelector("input");
 
-    if (DicInfo.inputState) nodeInput.focus();
-  }, [DicInfo.inputState]);
+  //   if (DicInfo.inputState) nodeInput.focus();
+  // }, [DicInfo.inputState]);
 
   // 윈도우 사이즈가 바뀔때
   useEffect(() => {

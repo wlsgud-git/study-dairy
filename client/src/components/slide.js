@@ -3,32 +3,30 @@ import "../css/slide.css";
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 import { Rbtree } from "../middleware/rbtree.js";
+import { Folder } from "./folder.js";
+import { File } from "./file.js";
+import { DictForm } from "./dictform.js";
 
 function Slide({ folderService, fileService }) {
   let { Menu, setMenu, DicInfo, setDicInfo, dicStatus, getDict } = useStatus();
 
   let [Fol, setFol] = useState(new Rbtree([]));
   let [Fi, setFi] = useState(new Rbtree([]));
-  let datas = [0, 1, 2];
 
   useEffect(() => {
     const getData = async () => {
       try {
         let data = await getDict(0);
-        if (data[0].length) data[0].map((val) => setFol(Fol.insert(val.name)));
-        if (data[1].length) data[1].map((val) => setFi(Fi.insert(val.name)));
-
-        // console.log(Fol.arr.map());
+        // if (data[1].length)
+        //   data[1].map((val) => setFi(Fi.insert(val.name, val)));
+        // if (data[0].length)
+        //   data[0].map((val) => setFol(Fol.insert(val.name, val)));
       } catch (err) {
         console.log(err, " this is error");
       }
     };
     getData();
   }, []);
-
-  async function dicSubmit(e) {
-    e.preventDefault();
-  }
 
   return (
     <div
@@ -85,28 +83,17 @@ function Slide({ folderService, fileService }) {
         onClick={() => setDicInfo((c) => ({ ...c, id: 0 }))}
       >
         {/* 딕셔너리 추가박스 */}
-        <div
+        {/* <div
           className="sd-dict_contianer"
           style={{ display: DicInfo.inputState ? "flex" : "none" }}
         >
-          <form action="post" className="sd-dict_form" onSubmit={dicSubmit}>
-            {/* 폴더/파일 이름부분 */}
-            <span>
-              <i
-                className={`fa-solid fa-${DicInfo.dic ? "folder" : "file"}`}
-              ></i>
-            </span>
-            <input type="text" className="sd-dict_input" onBlur={dicSubmit} />
-          </form>
-        </div>
+          <DictForm method="post" />
+        </div> */}
         {/* 폴더 / 파일 리스트 */}
-        {/* {datas.map((val) => (
-          <span>val</span>
-        ))} */}
-        {Fol.arr.map((val) => (
-          <span>{val.data}</span>
-        ))}
-        {/* {Fi.arr && Fi.arr.map((val) => <span key={val.id}>{val.name}</span>)} */}
+        {/* {Fol.arr.length &&
+          Fol.arr.map((val) => (
+            <Folder key={val.info.id} pa={Fol} setpa={setFol} data={val.info} />
+          ))} */}
       </ul>
     </div>
   );
