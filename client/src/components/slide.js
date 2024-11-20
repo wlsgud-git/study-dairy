@@ -8,31 +8,12 @@ import { File } from "./file.js";
 import { DictForm } from "./dictform.js";
 
 function Slide({ folderService, fileService }) {
-  let { Menu, setMenu, DicInfo, setDicInfo, dicStatus, getDict } = useStatus();
-
-  let [Fol, setFol] = useState(new Rbtree([]));
-  let [Fi, setFi] = useState(new Rbtree([]));
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        let data = await getDict(0);
-        // if (data[1].length)
-        //   data[1].map((val) => setFi(Fi.insert(val.name, val)));
-        // if (data[0].length)
-        //   data[0].map((val) => setFol(Fol.insert(val.name, val)));
-      } catch (err) {
-        console.log(err, " this is error");
-      }
-    };
-    getData();
-  }, []);
-
+  let { Menu, menuFocusing } = useStatus();
   return (
     <div
       className="sd-side_container"
       style={{ display: Menu.display ? "flex" : "none" }}
-      onClick={() => setMenu((c) => ({ ...c, focusing: true }))}
+      onClick={() => menuFocusing(true)}
     >
       {/* 사이드 검색및 폴더추가 */}
       <div className="sd-side_top">
@@ -58,43 +39,19 @@ function Slide({ folderService, fileService }) {
         </div>
         {/* 폴더추가 */}
         <div className="sd-f_add_container">
-          <span>{DicInfo.id}</span>
+          {/* <span>{DicInfo.id}</span> */}
           {/* 파일 추가 버튼 */}
-          <button
-            className="sd-folder_add_btn"
-            title="파일추가"
-            onClick={() => dicStatus(false)}
-          >
+          <button className="sd-folder_add_btn" title="파일추가">
             <i className="fa-solid fa-file-circle-plus"></i>
           </button>
           {/* 폴더 추가 버튼 */}
-          <button
-            className="sd-folder_add_btn"
-            title="폴더추가"
-            onClick={() => dicStatus(true)}
-          >
+          <button className="sd-folder_add_btn" title="폴더추가">
             <i className="fa-solid fa-folder-plus"></i>
           </button>
         </div>
       </div>
       {/* 사이드 폴더 리스트 */}
-      <ul
-        className="sd-folder_list_container"
-        onClick={() => setDicInfo((c) => ({ ...c, id: 0 }))}
-      >
-        {/* 딕셔너리 추가박스 */}
-        {/* <div
-          className="sd-dict_contianer"
-          style={{ display: DicInfo.inputState ? "flex" : "none" }}
-        >
-          <DictForm method="post" />
-        </div> */}
-        {/* 폴더 / 파일 리스트 */}
-        {/* {Fol.arr.length &&
-          Fol.arr.map((val) => (
-            <Folder key={val.info.id} pa={Fol} setpa={setFol} data={val.info} />
-          ))} */}
-      </ul>
+      <ul className="sd-folder_list_container"></ul>
     </div>
   );
 }

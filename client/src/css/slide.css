@@ -157,12 +157,6 @@
   border: none;
 }
 
-/* 폴더추가 박스*/
-.sd-dict_contianer {
-  width: 100%;
-  height: var(--folder-height);
-}
-
 @media (max-width: 640px) {
   .sd-side_container {
     max-width: 100%;

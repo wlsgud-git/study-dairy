@@ -17,6 +17,7 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     id: 0,
     inputState: false,
     dic: true,
+    handle: true,
   }); // 폴더 생성
   let [Menu, setMenu] = useState({
     menu: true,
@@ -25,10 +26,30 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     display: true,
   }); // 메뉴창
 
-  function dicStatus(dic) {
-    setDicInfo((c) => ({ ...c, inputState: !DicInfo.inputState, dic: dic }));
-  }
+  // 메뉴관련
+  const menuFocusing = (tf = undefined) =>
+    setMenu((c) => ({ ...c, focusing: tf !== undefined ? tf : !Menu.menu }));
+  const menuMenu = () =>
+    setMenu((c) => ({
+      ...c,
+      menu: Menu.adapt ? true : !Menu.menu,
+    }));
+  const menuAdapt = () =>
+    setMenu((c) => ({ ...c, adapt: WindowSize <= 640 ? true : false }));
+  useEffect(() => {
+    setMenu((c) => ({ ...c, display: Menu.adapt ? Menu.focusing : Menu.menu }));
+  }, [Menu.menu, Menu.adapt, Menu.focusing]);
 
+  // 폴더관련
+  const currentFolder = (id) => setDicInfo((c) => ({ ...c, id: id }));
+
+  // 다크모드 관련
+  const changeMode = () => setDarkmode(!Darkmode);
+  useEffect(() => {
+    document.body.dataset.theme = Darkmode ? "dark" : "light";
+  }, [Darkmode]);
+
+  // 최상위 폴더/파일 가져오는 함수
   const getDict = useCallback(
     async (fid) => {
       let fol = await folderService.getFolders(fid);
@@ -38,34 +59,20 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     [folderService, fileService]
   );
 
+  // useEffect
   // 사전 생성시 해당 폴더의 인풋에 포커스 이벤트
   // useEffect(() => {
   //   const node = document.querySelector(".sd-folder_list_container");
-  //   let nodeInput = node.children[DicInfo.id].querySelector("input");
+  //   let nodeChild = node.children[DicInfo.id];
+  //   let nodeInput = nodeChild.querySelector(
+  //     `.${DicInfo.handle ? "sd-dict_put_input" : "sd-dict_post_input"}`
+  //   );
 
   //   if (DicInfo.inputState) nodeInput.focus();
   // }, [DicInfo.inputState]);
 
   // 윈도우 사이즈가 바뀔때
-  useEffect(() => {
-    if (WindowSize <= 640)
-      setMenu((c) => ({
-        ...c,
-        adapt: true,
-        display: Menu.adapt ? Menu.focusing : Menu.menu,
-      }));
-    else
-      setMenu((c) => ({
-        ...c,
-        adapt: false,
-        display: Menu.adapt ? Menu.focusing : Menu.menu,
-      }));
-  }, [WindowSize]);
-
-  // 다크모드 이벤트
-  useEffect(() => {
-    document.body.dataset.theme = Darkmode ? "dark" : "light";
-  }, [Darkmode]);
+  useEffect(() => menuAdapt, [WindowSize]);
 
   // 윈도우 크기조절 이벤트
   useEffect(() => {
@@ -80,21 +87,20 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
 
   let value = useMemo(
     () => ({
-      // variable
+      // darkmode
       Darkmode,
+
+      changeMode,
+
+      // menu
       Menu,
-      DicInfo,
 
-      // set variable function
-      setDarkmode,
-      setMenu,
-      setDicInfo,
+      menuFocusing,
+      menuMenu,
 
-      // use function
-      dicStatus,
-      getDict,
+      // dicinfo
     }),
-    [Darkmode, Menu, DicInfo, getDict]
+    [Darkmode, Menu, DicInfo]
   );
 
   return (

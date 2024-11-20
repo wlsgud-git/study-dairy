@@ -2,18 +2,17 @@
 
 .sd-folder_box {
   width: 100%;
-  border: 1px solid black;
+  height: auto;
+  border-bottom: 1px solid black;
   position: relative;
 }
 
 .sd-folder_li {
   width: 100%;
-  min-height: var(--folder-height);
   border: 1px solid red;
 }
 
 .sd-folder_lists {
-  height: 10px;
   width: 90%;
   border: 1px solid blue;
   float: right;

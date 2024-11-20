@@ -3,25 +3,22 @@ import "../css/memo.css";
 import { useState, useEffect } from "react";
 
 function Memo() {
-  let { Darkmode, setDarkmode, Menu, setMenu } = useStatus();
+  let { Darkmode, Menu, changeMode, menuFocusing, menuMenu } = useStatus();
   return (
     <div
       className="sd-main_container"
       style={{ display: Menu.adapt && Menu.display ? "none" : "flex" }}
-      onClickCapture={() => setMenu((c) => ({ ...c, focusing: false }))}
+      onClick={() => menuFocusing(false)}
     >
       {/* 메모부분 위쪽 부분기능 */}
       <div className="sd-main_top">
         <button
           className="sd-side_display_btn"
-          onClick={() =>
-            setMenu((c) => ({
-              ...c,
-              menu: Menu.adapt ? true : !Menu.menu,
-              focusing: Menu.adapt ? true : !Menu.menu,
-              display: Menu.adapt ? !Menu.focusing : !Menu.menu,
-            }))
-          }
+          onClickCapture={(e) => {
+            e.stopPropagation();
+            menuMenu();
+            menuFocusing();
+          }}
         >
           <i
             className={`fa-solid fa-${
@@ -29,10 +26,7 @@ function Memo() {
             }`}
           ></i>
         </button>
-        <button
-          className="sd-color_theme_btn"
-          onClick={() => setDarkmode(!Darkmode)}
-        >
+        <button className="sd-color_theme_btn" onClick={() => changeMode()}>
           <i className={`fa-solid fa-${Darkmode ? "sun" : "moon"}`}></i>
         </button>
       </div>

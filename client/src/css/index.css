@@ -25,7 +25,8 @@
   --sd-current-memo-height: 30px;
 
   /* 폴더 */
-  --folder-height: 36px;
+  --folder-height: 26px;
+  --iconbox-width: 50px;
 }
 
 body {
@@ -55,4 +56,10 @@ body[data-theme="dark"] {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.sd-dict_add {
+  width: 100%;
+  border: 1px solid red;
+  height: var(--folder-height);
 }
