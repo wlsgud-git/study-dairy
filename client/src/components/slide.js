@@ -3,12 +3,33 @@ import "../css/slide.css";
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 import { Rbtree } from "../middleware/rbtree.js";
-import { Folder } from "./folder.js";
-import { File } from "./file.js";
-import { DictForm } from "./dictform.js";
+import { Folder, File, CreateDict } from "./dict.js";
 
 function Slide({ folderService, fileService }) {
-  let { Menu, menuFocusing } = useStatus();
+  let { Menu, menuFocusing, getDict, currentFol } = useStatus();
+
+  let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
+  let [Fi, setFi] = useState({ node: new Rbtree(), data: [[]] });
+
+  useEffect(() => {
+    let getData = async () => {
+      let data = await getDict(0);
+      if (data[0].length) {
+        data[0].map((val) => {
+          let ar = Fol.node.insert(val.name, val);
+          if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
+        });
+      }
+      if (data[1].length) {
+        data[1].map((val) => {
+          let ar = Fi.node.insert(val.name, val);
+          if (ar) setFi((c) => ({ ...c, data: [...c.data, ar] }));
+        });
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <div
       className="sd-side_container"
@@ -51,7 +72,16 @@ function Slide({ folderService, fileService }) {
         </div>
       </div>
       {/* 사이드 폴더 리스트 */}
-      <ul className="sd-folder_list_container"></ul>
+      <ul className="sd-folder_list_container">
+        {Fol.data[Fol.data.length - 1].length &&
+          Fol.data[Fol.data.length - 1].map((val) => (
+            <Folder key={val.info.id} pn={Fol} setpn={setFol} data={val.info} />
+          ))}
+        {Fi.data[Fi.data.length - 1].length &&
+          Fi.data[Fi.data.length - 1].map((val) => (
+            <File key={val.info.id} pn={Fi} setpn={setFi} data={val.info} />
+          ))}
+      </ul>
     </div>
   );
 }

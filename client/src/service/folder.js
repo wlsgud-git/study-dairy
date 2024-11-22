@@ -3,7 +3,7 @@ export class FolderService {
     this.http = http;
   }
 
-  async getFolders(fid) {
+  async getFolderDetail(fid) {
     return this.http.httpFetch(`/folders?fid=${fid}`, {
       method: "get",
     });

@@ -1,0 +1,62 @@
+@import url("index.css");
+
+.sd-folder,
+.sd-file,
+.sd-create_dict_box {
+  width: 100%;
+  height: var(--dict-height);
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.icons_box {
+  width: var(--dict-iconbox-width);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: var(--theme-font-color);
+}
+
+/* menu */
+.sd-folder_menu {
+  width: var(--folder-menu-width);
+  z-index: 12315;
+  background-color: inherit;
+
+  flex-direction: column;
+  position: absolute;
+  padding-top: 5px;
+  border-radius: 8px;
+  top: -30px;
+  right: -70%;
+}
+
+.sd-folder_menu button {
+}
+/* .sd-folder_lists {
+  width: 90%;
+  height: ;
+} */
+
+/* form */
+.sd-dict_from {
+  width: calc(100% - var(--dict-iconbox-width));
+  height: 100%;
+}
+
+.sd-dict_input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  color: var(--theme-font-color);
+  padding: 1px 4px;
+  background-color: inherit;
+  cursor: default;
+}

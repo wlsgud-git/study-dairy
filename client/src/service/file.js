@@ -3,7 +3,7 @@ export class FileService {
     this.http = http;
   }
 
-  async getFiles(fid) {
+  async getFileDetail(fid) {
     return this.http.httpFetch(`/files?fid=${fid}`, {
       method: "get",
     });

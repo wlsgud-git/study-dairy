@@ -10,10 +10,10 @@ class Node {
 }
 
 export class Rbtree {
-  constructor(arr) {
+  constructor() {
     this.head = null;
     this.length = 0;
-    this.arr = arr;
+    this.check = {};
   }
 
   mergeSort(arr) {
@@ -282,6 +282,7 @@ export class Rbtree {
   }
 
   insert(data, info) {
+    if (data in this.check) return undefined;
     this.length += 1;
     let newNode = new Node(data, info);
 
@@ -289,7 +290,8 @@ export class Rbtree {
     if (this.head == null) {
       newNode.tf = true;
       this.head = newNode;
-      return;
+      this.check[data] = true;
+      return this.lists();
     }
 
     let current = this.head;
@@ -305,6 +307,7 @@ export class Rbtree {
         break;
       } else current = lr == "l" ? current.left : current.right;
     }
+    this.check[data] = true;
     return this.lists();
   }
   modify() {}
@@ -379,7 +382,6 @@ export class Rbtree {
         }
       }
     }
-    this.arr = result.map((val) => val);
-    return new Rbtree(this.arr);
+    return result;
   }
 }

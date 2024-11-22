@@ -20,31 +20,3 @@ code {
 }
 
 /* 사전 from css */
-.sd-dict_form {
-  width: 100%;
-  display: flex;
-  height: var(--folder-height);
-  align-items: center;
-  justify-content: space-around;
-}
-
-.dic_icons_box {
-  width: var(--iconbox-width);
-  display: flex;
-  align-items: center;
-  height: 100%;
-  justify-content: space-around;
-}
-
-.sd-dict_put_input,
-.sd-dict_post_input {
-  width: calc(100% - var(--iconbox-width));
-  display: flex;
-  padding: 0px 6px;
-  align-items: center;
-  border: none;
-  background-color: inherit;
-  color: var(--theme-font-color);
-  outline: none;
-  height: 100%;
-}
