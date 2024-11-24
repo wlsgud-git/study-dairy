@@ -19,8 +19,9 @@ class FolderData {
 
   async createFolder(info) {
     try {
-      let query = "insert into folders values()";
-      const data = [];
+      let query =
+        "insert into folders values(default, $1, $2,default, $3) RETURNING *";
+      const data = [info["full_name"], info["name"], info["folder_id"]];
       return await dbPlay(query, data);
     } catch (err) {
       throw err;

@@ -282,6 +282,7 @@ export class Rbtree {
   }
 
   insert(data, info) {
+    if (info.dic_type == "file") data = "힣힣힣힣힣" + data;
     if (data in this.check) return undefined;
     this.length += 1;
     let newNode = new Node(data, info);

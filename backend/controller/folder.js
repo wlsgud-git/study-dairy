@@ -11,7 +11,12 @@ export async function getFolders(req, res) {
 }
 export async function createFolder(req, res) {
   try {
-  } catch (err) {}
+    let response = await fol.createFolder(req.body);
+
+    return res.status(201).json({ data: response });
+  } catch (err) {
+    throw err;
+  }
 }
 export async function modifyFolder() {}
 export async function deleteFolder() {}

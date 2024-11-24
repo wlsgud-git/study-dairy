@@ -11,7 +11,11 @@ export async function getFiles(req, res) {
 }
 export async function createFile(req, res) {
   try {
-  } catch (err) {}
+    let response = await fi.createFile(req.body);
+    return res.status(201).json({ data: response });
+  } catch (err) {
+    throw err;
+  }
 }
 export async function modifyFile() {}
 export async function deleteFile() {}

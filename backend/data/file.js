@@ -19,7 +19,8 @@ class FileData {
 
   async createFile(info) {
     try {
-      let query = "insert into folders values(default, $1, $2, $3)";
+      let query =
+        "insert into files values(default, $1, $2, default, default, default, $3) returning *";
       const data = [info["full_name"], info["name"], info["folder_id"]];
       return await dbPlay(query, data);
     } catch (err) {
