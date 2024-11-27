@@ -18,7 +18,7 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     dic: true,
     modify: false,
   });
-  let [FiInfo, setFiInfo] = useState({ id: 0 });
+  let [FiInfo, setFiInfo] = useState({ id: 0, modify: false });
 
   const getDict = useCallback(
     async (id) => {
@@ -43,17 +43,37 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     [folderService, fileService]
   );
 
+  const modifyDict = useCallback(
+    async (data, dic) => {
+      let res = dic
+        ? await folderService.modifyFolder(data)
+        : await fileService.modifyFile(data);
+      return res;
+    },
+    [folderService, fileService]
+  );
+
+  const deleteDict = useCallback(
+    async (data) => {
+      let res =
+        data.dic_type == "folder"
+          ? await folderService.deleteFolder(data.id)
+          : await fileService.deleteFile(data.id);
+      return res;
+    },
+    [folderService, fileService]
+  );
+
+  // 폴더변환
   const currentFol = (id) => setFolInfo((c) => ({ ...c, id: id }));
   const folderCreate = (dic = false) =>
     setFolInfo((c) => ({ ...c, create: !FolInfo.create, dic: dic }));
+  const folderModify = () => {
+    setFolInfo((c) => ({ ...c, modify: !FolInfo.modify }));
+  };
 
-  useEffect(() => {
-    if (FolInfo.create) {
-      let node = document.querySelector(".sd-folder_list_container");
-      let nodeInput = node.children[FolInfo.id].querySelector(".sd-post_input");
-      nodeInput.focus();
-    }
-  }, [FolInfo.create]);
+  // 파일변환
+  const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));
 
   // 메뉴관련 ------------------------------------------
   let [Menu, setMenu] = useState({
@@ -71,6 +91,7 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     }));
   const menuAdapt = () =>
     setMenu((c) => ({ ...c, adapt: WindowSize <= 640 ? true : false }));
+
   useEffect(() => {
     setMenu((c) => ({ ...c, display: Menu.adapt ? Menu.focusing : Menu.menu }));
   }, [Menu.menu, Menu.adapt, Menu.focusing]);
@@ -95,6 +116,14 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
     };
   }, []);
 
+  // 상태 업데이트 값
+  // useEffect(() => {
+  //   console.log("current_folder_id", FolInfo.id);
+  //   console.log("current_file_id", FiInfo.id);
+  //   console.log("menu focusing", Menu.focusing);
+  //   console.log("folder_inputstate", FolInfo.create);
+  // }, [FolInfo.id, FiInfo.id, Menu.focusing, FolInfo.create]);
+
   // 결과값 ------------------------
   let value = useMemo(
     () => ({
@@ -114,8 +143,14 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
 
       getDict,
       createDict,
+      deleteDict,
+      modifyDict,
+
       currentFol,
       folderCreate,
+      folderModify,
+
+      currentFi,
     }),
     [Darkmode, Menu, FolInfo]
   );

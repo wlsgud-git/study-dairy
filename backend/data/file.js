@@ -27,8 +27,25 @@ class FileData {
       throw err;
     }
   }
-  async modifyFile() {}
-  async deleteFile() {}
+  async modifyFile(info) {
+    try {
+      let query =
+        "update files set full_name=$1, name=$2 where id = $3 RETURNING *";
+      const data = [info["full_name"], info["name"], info["id"]];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteFile(id) {
+    try {
+      let query = "delete from files where id=$1";
+      const data = [id];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export const fi = new FileData();

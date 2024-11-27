@@ -4,7 +4,7 @@
 .sd-file,
 .sd-create_dict_box {
   width: 100%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   position: relative;
   flex-direction: column;
 }
@@ -18,30 +18,49 @@
   justify-content: space-between;
 }
 
+.sd-folder_main:hover,
+.sd-file_main:hover {
+  background-color: var(--theme-hover-transparent);
+}
+
 .icons_box {
   width: var(--dict-iconbox-width);
   height: 100%;
   display: flex;
   align-items: center;
+  font-size: 14px;
   justify-content: space-around;
+  -ms-flex-item-align: end;
   color: var(--theme-font-color);
 }
 
 /* menu */
-.sd-folder_menu {
+.sd-dict_menu {
   width: var(--folder-menu-width);
   z-index: 12315;
-  background-color: inherit;
-
+  background-color: var(--theme-dict-menu-background);
   flex-direction: column;
   position: absolute;
-  padding-top: 5px;
+  /* padding-top: 5px; */
   border-radius: 8px;
   top: -30px;
   right: -70%;
+  outline: none;
+  overflow: hidden;
+  box-shadow: 0.4px 0.4px 0.4px 0.4px black;
 }
 
-.sd-folder_menu button {
+.sd-dict_menu button {
+  background-color: var(--theme-dict-menu-background);
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 0px;
+  color: var(--theme-font-color);
+}
+
+.sd-dict_menu button:hover {
+  background-color: var(--theme-hover-transparent);
 }
 
 /* lists */
@@ -50,6 +69,12 @@
   display: flex;
   flex-direction: column;
   float: right;
+}
+
+.folder_childs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* form */

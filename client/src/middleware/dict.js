@@ -123,6 +123,7 @@ export class Rbtree {
       if (!dn.tf) return;
     } else {
       dn.data = sn.data;
+      dn.info = sn.info;
       snp.data < sn.data ? (snp.right = sn.left) : (snp.left = sn.left);
       pos = snp.data < sn.data ? "r" : "l";
       if (!sn.tf) return;
@@ -177,7 +178,7 @@ export class Rbtree {
       // 부모 자식 조카 있는경우
       else if (farr.length == 3) {
         let count = 0;
-        farr.sort((a, b) => a.data - b.data);
+        farr = this.mergeSort(farr).map((val) => val);
 
         count = child.data == farr[1].data ? 1 : 2;
 
@@ -313,7 +314,6 @@ export class Rbtree {
   }
   modify() {}
   delete(data) {
-    this.length -= 1;
     // dn 삭제될 노드
     // sn 스왑할 노드
     // snp 스왑할 노드의 부모노드
@@ -340,13 +340,17 @@ export class Rbtree {
           this.head.parent = null;
           this.head.tf = true;
         }
-        return;
+        this.length -= 1;
+        delete this.check[data];
+        return this.lists();
       } else {
         snp = sn.parent;
       }
     } else if (dn.left && dn.left.data == sn.data) snp = dn;
     else snp = sn.parent;
     this.deleteValidate(dn, sn, snp);
+    this.length -= 1;
+    delete this.check[data];
     return this.lists();
   }
 
@@ -384,5 +388,15 @@ export class Rbtree {
       }
     }
     return result;
+  }
+}
+
+export async function DictDisplay(action, pn, setpn) {
+  // 1 create
+  // 2 modify
+  // 3 delete
+  if (action == 1) {
+  } else if (action == 2) {
+  } else {
   }
 }

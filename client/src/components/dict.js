@@ -2,26 +2,45 @@ import "../css/dict.css";
 
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
-import { Rbtree } from "../middleware/rbtree.js";
 
-function DictForm({ method, data, pn, setpn }) {
-  let { FolInfo, folderCreate, createDict } = useStatus();
+export function DictForm({ method, data, pn, setpn }) {
+  let { FolInfo, folderCreate, createDict, folderModify, modifyDict } =
+    useStatus();
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
 
   async function submitDict(e) {
-    e.preventDefault();
-
     let formData = new FormData();
-    formData.append("full_name", data.full_name + `/${InputVal}`);
-    formData.append("name", InputVal);
-    formData.append("folder_id", data.id);
 
     if (method == "put") {
-      folderCreate(false);
+      folderModify();
+      if (InputVal == "" || InputVal == data.name) {
+        setInputVal(data.name);
+        return;
+      }
+      let text = data.full_name.split("/").slice(0, -1).join("/");
+      let full_name = text == "" ? "/" + InputVal : text + "/" + InputVal;
+
+      formData.append("full_name", full_name);
+      formData.append("name", InputVal);
+      formData.append("id", data.id);
+
+      try {
+        const res = await modifyDict(formData, true);
+        let newdata = await res.data[0];
+        pn.node.delete(data.name);
+        let ar = pn.node.insert(newdata.name, newdata);
+        if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
+      } catch (err) {
+        throw err;
+      }
     } else {
-      folderCreate(false);
+      folderCreate();
       if (InputVal == "") return;
+
+      formData.append("full_name", data.full_name + `/${InputVal}`);
+      formData.append("name", InputVal);
+      formData.append("folder_id", data.id);
 
       try {
         const res = await createDict(formData, FolInfo.dic);
@@ -36,19 +55,25 @@ function DictForm({ method, data, pn, setpn }) {
   }
 
   return (
-    <form action={method} className="sd-dict_from" onSubmit={submitDict}>
+    <form
+      action={method}
+      className="sd-dict_from"
+      onSubmit={(e) => {
+        e.preventDefault();
+        forming.current.blur();
+      }}
+    >
       <input
         className={`sd-${method == "put" ? "put" : "post"}_input`}
         type="text"
         spellCheck="false"
         value={InputVal}
+        ref={forming}
         onChange={(e) => setInputVal(e.target.value)}
-        // onBlur={(e) => {
-        //   return method == "post" || FolInfo.modify
-        //     ? forming.current.submit()
-        //     : "none";
-        // }}
-        readOnly={method == "put" ? !FolInfo.modify : false}
+        onBlur={() => (method == "post" || FolInfo.modify ? submitDict() : "")}
+        readOnly={
+          method == "put" && FolInfo.id == data.id ? !FolInfo.modify : false
+        }
       ></input>
     </form>
   );
@@ -76,102 +101,49 @@ export function CreateDict({ data, pn, setpn }) {
   );
 }
 
-export function Folder({ key, pn, setpn, data }) {
-  let { getDict, currentFol, menuFocusing } = useStatus();
-  let [IsOpen, setIsOpen] = useState(false);
-  let [ContextMenu, setContextMenu] = useState(false);
-
-  let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
-
-  useEffect(() => {
-    let getData = async () => {
-      let li = await getDict(data.id);
-      li.map((val) => {
-        let ar = Fol.node.insert(val.name, val);
-        if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
-      });
-    };
-    getData();
-  }, []);
-
-  function clickEvent(e) {
+export function DictMenu({ open, setopen, data }) {
+  let { folderCreate } = useStatus();
+  // 메뉴에 이벤트 발생시
+  let menu = useRef(null);
+  async function menuEvent(e) {
     e.stopPropagation();
-    currentFol(data.id);
-    menuFocusing(true);
-    // if (e.buttons == 1) {
-    //   setIsOpen(!IsOpen);
-    // } else {
-    //   setContextMenu(true);
-    // }
+
+    let event = e.target.innerText;
+
+    if (event == "파일생성" || event == "폴더생성") {
+      e.preventDefault();
+      folderCreate(event == "파일생성" ? false : true);
+    } else if (event == "이름변경") {
+    } else {
+    }
   }
 
   useEffect(() => {
-    console.log(Fol.data[Fol.data.length - 1]);
-  }, [Fol.data]);
+    if (open) menu.current.focus();
+  }, [open]);
 
   return (
-    <div className="sd-folder">
-      {/* main */}
-      <div className="sd-folder_main" onClickCapture={clickEvent}>
-        <div className="icons_box">
-          <span>
-            <i
-              className={`fa-solid fa-chevron-${IsOpen ? "down" : "right"}`}
-            ></i>
-          </span>
-          <span>
-            <i className="fa-solid fa-folder"></i>
-          </span>
-        </div>
-        <DictForm method="put" data={data} />
-      </div>
-      {/* menu */}
-      <div
-        className="sd-folder_menu"
-        style={{ display: ContextMenu ? "flex" : "none" }}
+    <div
+      className="sd-dict_menu"
+      style={{ display: open ? "flex" : "none" }}
+      tabIndex="0"
+      ref={menu}
+      onBlur={() => setopen(false)}
+    >
+      <button
+        style={{ display: data.dic_type == "folder" ? "block" : "none" }}
+        onMouseDown={menuEvent}
       >
-        <button>파일생성</button>
-        <button>폴더생성</button>
-        <button>삭제</button>
-        <button>이름바꾸기</button>
-      </div>
-      {/* lists */}
-      <ul className="sd-folder_lists">
-        <CreateDict data={data} />
-        {Fol.data[Fol.data.length - 1].length &&
-          Fol.data[Fol.data.length - 1].map((val) =>
-            val.info.dic_type == "folder" ? (
-              <Folder
-                key={val.info.name}
-                data={val.info}
-                pn={Fol}
-                setpn={setFol}
-              />
-            ) : (
-              <File
-                key={val.info.name}
-                data={val.info}
-                pn={Fol}
-                setpn={setFol}
-              />
-            )
-          )}
-      </ul>
-    </div>
-  );
-}
-
-export function File({ key, pn, setpn, data }) {
-  return (
-    <div className="sd-file">
-      <div className="sd-file_main">
-        <div className="icons_box">
-          <span>
-            <i className="fa-solid fa-file"></i>
-          </span>
-        </div>
-        <DictForm method="put" data={data} />
-      </div>
+        파일생성
+      </button>
+      <button
+        onMouseDown={menuEvent}
+        style={{ display: data.dic_type == "folder" ? "block" : "none" }}
+      >
+        폴더생성
+      </button>
+      <button onMouseDown={menuEvent}>이름변경</button>
+      <button onMouseDown={menuEvent}>삭제</button>
     </div>
   );
 }

@@ -27,8 +27,25 @@ class FolderData {
       throw err;
     }
   }
-  async modifyFolder() {}
-  async deleteFolder() {}
+  async modifyFolder(info) {
+    try {
+      let query =
+        "update folders set full_name=$1, name=$2 where id = $3 RETURNING *";
+      const data = [info["full_name"], info["name"], info["id"]];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteFolder(id) {
+    try {
+      let query = "delete from folders where id=$1";
+      const data = [id];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export const fol = new FolderData();

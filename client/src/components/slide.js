@@ -2,8 +2,10 @@ import "../css/slide.css";
 
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
-import { Rbtree } from "../middleware/rbtree.js";
-import { Folder, File, CreateDict } from "./dict.js";
+import { Rbtree } from "../middleware/dict.js";
+import { CreateDict } from "./dict.js";
+import { Folder } from "./folder.js";
+import { File } from "./file.js";
 
 function Slide({ folderService, fileService }) {
   let { Menu, menuFocusing, getDict, currentFol, folderCreate } = useStatus();
@@ -26,7 +28,7 @@ function Slide({ folderService, fileService }) {
     <div
       className="sd-side_container"
       style={{ display: Menu.display ? "flex" : "none" }}
-      onClick={() => menuFocusing(true)}
+      onMouseDown={() => menuFocusing(true)}
     >
       {/* 사이드 검색및 폴더추가 */}
       <div className="sd-side_top">
@@ -72,26 +74,30 @@ function Slide({ folderService, fileService }) {
         </div>
       </div>
       {/* 사이드 폴더 리스트 */}
-      <ul className="sd-folder_list_container" onClick={() => currentFol(0)}>
+      <ul
+        className="sd-folder_list_container"
+        onMouseDown={() => currentFol(0)}
+      >
         <CreateDict data={{ id: 0, full_name: "" }} pn={Fol} setpn={setFol} />
-        {Fol.data[Fol.data.length - 1].length &&
-          Fol.data[Fol.data.length - 1].map((val) =>
-            val.info.dic_type == "folder" ? (
-              <Folder
-                key={val.info.name}
-                data={val.info}
-                pn={Fol}
-                setpn={setFol}
-              />
-            ) : (
-              <File
-                key={val.info.name}
-                data={val.info}
-                pn={Fol}
-                setpn={setFol}
-              />
+        {Fol.data[Fol.data.length - 1].length
+          ? Fol.data[Fol.data.length - 1].map((val) =>
+              val.info.dic_type == "folder" ? (
+                <Folder
+                  key={val.info.name}
+                  data={val.info}
+                  pn={Fol}
+                  setpn={setFol}
+                />
+              ) : (
+                <File
+                  key={val.info.name}
+                  data={val.info}
+                  pn={Fol}
+                  setpn={setFol}
+                />
+              )
             )
-          )}
+          : ""}
       </ul>
     </div>
   );

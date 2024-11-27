@@ -17,5 +17,20 @@ export async function createFile(req, res) {
     throw err;
   }
 }
-export async function modifyFile() {}
-export async function deleteFile() {}
+export async function modifyFile(req, res) {
+  try {
+    let response = await fi.modifyFile(req.body);
+    return res.status(200).json({ data: response });
+  } catch (err) {
+    throw err;
+  }
+}
+export async function deleteFile(req, res) {
+  try {
+    let { id } = req.params;
+    let response = await fi.deleteFile(id);
+    return res.status(200).json({ message: "파일삭제 완료" });
+  } catch (err) {
+    throw err;
+  }
+}

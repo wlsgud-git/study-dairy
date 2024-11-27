@@ -16,7 +16,16 @@ export class FolderService {
     });
   }
 
-  async updateFolder() {}
+  async modifyFolder(data) {
+    return this.http.httpFetch("/folder", {
+      method: "put",
+      body: data,
+    });
+  }
 
-  async deleteFolder() {}
+  async deleteFolder(id) {
+    return this.http.httpFetch(`/folder/${id}`, {
+      method: "delete",
+    });
+  }
 }

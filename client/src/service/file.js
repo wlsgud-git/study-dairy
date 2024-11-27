@@ -14,11 +14,15 @@ export class FileService {
       body: data,
     });
   }
-  async modifyFile() {}
-  async deleteFile(data) {
+  async modifyFile(data) {
     return this.http.httpFetch("/file", {
-      method: "delete",
+      method: "put",
       body: data,
+    });
+  }
+  async deleteFile(id) {
+    return this.http.httpFetch(`/file/${id}`, {
+      method: "delete",
     });
   }
 }
