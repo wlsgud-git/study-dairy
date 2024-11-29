@@ -7,21 +7,16 @@ import { CreateDict } from "./dict.js";
 import { Folder } from "./folder.js";
 import { File } from "./file.js";
 
-function Slide({ folderService, fileService }) {
-  let { Menu, menuFocusing, getDict, currentFol, folderCreate } = useStatus();
+function Slide() {
+  let { Menu, menuFocusing, DictCrud, currentFol, folderCreate } = useStatus();
 
   let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
 
   useEffect(() => {
-    let getData = async () => {
-      let li = await getDict(0);
+    let datas = async () =>
+      await DictCrud("get", Fol, setFol, 0).catch((err) => console.log(err));
 
-      li.map((val) => {
-        let ar = Fol.node.insert(val.name, val);
-        if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
-      });
-    };
-    getData();
+    datas();
   }, []);
 
   return (

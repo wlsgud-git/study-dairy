@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
 import Slide from "./components/slide.js";
 import Memo from "./components/memo.js";
 
-function App({ folderService, fileService }) {
+function App() {
   return (
     <div className="App">
       <div className="sd-all_container">
-        <Slide folderService={folderService} fileService={fileService} />
-        <Memo fileService={fileService} />
+        <Slide />
+        <Memo />
       </div>
     </div>
   );

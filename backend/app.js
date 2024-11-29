@@ -6,8 +6,7 @@ import cors from "cors";
 import fs from "fs";
 
 // api
-import FolderApi from "./apis/folder.js";
-import FileApi from "./apis/file.js";
+import DictApi from "./apis/dict.js";
 
 const app = express();
 const __dirname = path.resolve();
@@ -23,8 +22,7 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 app.use(cors(corsOption));
 
 // api middleware
-app.use("/", FolderApi);
-app.use("/", FileApi);
+app.use("/", DictApi);
 
 app.use((req, res, next) => {
   next();

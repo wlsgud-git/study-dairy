@@ -1,10 +1,9 @@
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
-import { Rbtree } from "../middleware/dict.js";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 
 export function File({ key, pn, setpn, data }) {
-  let { currentFi, menuFocusing, deleteDict } = useStatus();
+  let { currentFi, menuFocusing } = useStatus();
 
   // menu
   let [ContextMenu, setContextMenu] = useState(false);
@@ -30,7 +29,7 @@ export function File({ key, pn, setpn, data }) {
             <i className="fa-solid fa-file"></i>
           </span>
         </div>
-        <DictForm method="put" data={data} />
+        <DictForm method="put" data={data} pn={pn} setpn={setpn} />
       </div>
       {/* menu */}
       <DictMenu

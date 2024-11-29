@@ -7,20 +7,18 @@ import reportWebVitals from "./reportWebVitals";
 import { StatusProvider } from "./context/status.js";
 
 import { HttpClient } from "./network/http.js";
-import { FolderService } from "./service/folder.js";
-import { FileService } from "./service/file.js";
+import { DictService } from "./service/dict.js";
 
 const baseURL = process.env.REACT_APP_BASEURL;
 
 const httpClient = new HttpClient(baseURL);
-const folderService = new FolderService(httpClient);
-const fileService = new FileService(httpClient);
+const dictService = new DictService(httpClient);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <StatusProvider folderService={folderService} fileService={fileService}>
-      <App folderService={folderService} fileService={fileService} />
+    <StatusProvider dictService={dictService}>
+      <App dictService={dictService} />
     </StatusProvider>
   </React.StrictMode>
 );

@@ -6,11 +6,10 @@ import react, {
   useMemo,
   useState,
 } from "react";
-import { FolderService } from "../service/folder";
 
 export const StatusContext = createContext();
 
-export const StatusProvider = ({ folderService, fileService, children }) => {
+export const StatusProvider = ({ dictService, children }) => {
   // 사전관련 --------------------------------------------------------
   let [FolInfo, setFolInfo] = useState({
     id: 0,
@@ -20,48 +19,48 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
   });
   let [FiInfo, setFiInfo] = useState({ id: 0, modify: false });
 
-  const getDict = useCallback(
-    async (id) => {
-      let result = [];
-      let fol = await folderService.getFolderDetail(id);
-      let fi = await fileService.getFileDetail(id);
+  const DictCrud = useCallback(
+    async (action, pn, setpn, data) => {
+      let res;
+      let newData;
 
-      fol.map((val) => result.push(val));
-      fi.map((val) => result.push(val));
-      return result;
-    },
-    [folderService, fileService]
-  );
+      if (action == "get" || action == "post" || action == "put") {
+        switch (action) {
+          case "get":
+            res = await dictService.getDictDetail(data);
+            newData = await res.data;
+            break;
+          case "post":
+            res = await dictService.createDict(data);
+            newData = await res.data;
+            break;
+          default:
+            res = await dictService.modifyDict(data);
+            newData = await res.data;
+            break;
+        }
 
-  const createDict = useCallback(
-    async (data, dic) => {
-      let res = dic
-        ? await folderService.createFolder(data)
-        : await fileService.createFile(data);
-      return res;
-    },
-    [folderService, fileService]
-  );
+        if (action == "put") {
+          let dd = JSON.parse(data.get("modify_data"));
 
-  const modifyDict = useCallback(
-    async (data, dic) => {
-      let res = dic
-        ? await folderService.modifyFolder(data)
-        : await fileService.modifyFile(data);
-      return res;
+          let del_name =
+            dd.dic_type == "file" ? "힣힣힣힣힣" + dd.name : dd.name;
+          pn.node.delete(del_name);
+        }
+        newData.map((val) => {
+          let ar = pn.node.insert(val.name, val);
+          if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
+        });
+      } else {
+        let dd = JSON.parse(data);
+        res = await dictService.deleteDict(dd);
+        let ar = pn.node.delete(
+          dd.dic_type == "file" ? "힣힣힣힣힣" + dd.name : dd.name
+        );
+        if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
+      }
     },
-    [folderService, fileService]
-  );
-
-  const deleteDict = useCallback(
-    async (data) => {
-      let res =
-        data.dic_type == "folder"
-          ? await folderService.deleteFolder(data.id)
-          : await fileService.deleteFile(data.id);
-      return res;
-    },
-    [folderService, fileService]
+    [dictService]
   );
 
   // 폴더변환
@@ -141,10 +140,7 @@ export const StatusProvider = ({ folderService, fileService, children }) => {
       // dictionary
       FolInfo,
 
-      getDict,
-      createDict,
-      deleteDict,
-      modifyDict,
+      DictCrud,
 
       currentFol,
       folderCreate,

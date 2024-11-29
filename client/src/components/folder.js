@@ -7,7 +7,6 @@ import { File } from "./file.js";
 let count = 0;
 
 export function Folder({ key, pn, setpn, data }) {
-  // let id = useRef(count + 1);
   let { getDict, currentFol, menuFocusing } = useStatus();
   // main
   let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
@@ -28,25 +27,21 @@ export function Folder({ key, pn, setpn, data }) {
   let [IsOpen, setIsOpen] = useState(false);
 
   // 폴더 리스트
-  useEffect(() => {
-    let getData = async () => {
-      let li = await getDict(data.id);
-      li.map((val) => {
-        let ar = Fol.node.insert(val.name, val);
-        if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
-      });
-    };
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   let getData = async () => {
+  //     let li = await getDict(data.id);
+  //     li.map((val) => {
+  //       let ar = Fol.node.insert(val.name, val);
+  //       if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
+  //     });
+  //   };
+  //   getData();
+  // }, []);
 
   return (
     <div className="sd-folder">
       {/* main */}
-      <div
-        className="sd-folder_main"
-        id={id.current}
-        onMouseDown={mousedownEvent}
-      >
+      <div className="sd-folder_main" onMouseDown={mousedownEvent}>
         <div className="icons_box">
           <span>
             <i

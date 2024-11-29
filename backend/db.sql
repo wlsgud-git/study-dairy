@@ -1,4 +1,4 @@
-create table folders(
+create table folder(
     id serial not null primary key, --고유 아디 
     full_name varchar not null unique default '', --전체 폴더 이름
     name varchar(20) not null, --폴더 이름
@@ -9,7 +9,7 @@ create table folders(
     FOREIGN KEY (folder_id) REFERENCES folders (id) on delete cascade on update cascade 
 )
 
-create table files(
+create table file(
     id serial not null primary key, --파일 아이디
     full_name varchar not null unique, --전체 파일 이름
     name varchar(20) not null, --파일 이름

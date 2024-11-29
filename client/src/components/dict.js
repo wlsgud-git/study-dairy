@@ -4,15 +4,22 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
 export function DictForm({ method, data, pn, setpn }) {
-  let { FolInfo, folderCreate, createDict, folderModify, modifyDict } =
-    useStatus();
+  let { FolInfo, folderCreate, folderModify, DictCrud } = useStatus();
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
 
   async function submitDict(e) {
     let formData = new FormData();
 
-    if (method == "put") {
+    if (method == "post") {
+      folderCreate();
+      if (InputVal == "") return;
+
+      formData.append("full_name", data.full_name + `/${InputVal}`);
+      formData.append("name", InputVal);
+      formData.append("folder_id", data.id);
+      formData.append("dic_type", FolInfo.dic ? "folder" : "file");
+    } else {
       folderModify();
       if (InputVal == "" || InputVal == data.name) {
         setInputVal(data.name);
@@ -24,34 +31,11 @@ export function DictForm({ method, data, pn, setpn }) {
       formData.append("full_name", full_name);
       formData.append("name", InputVal);
       formData.append("id", data.id);
-
-      try {
-        const res = await modifyDict(formData, true);
-        let newdata = await res.data[0];
-        pn.node.delete(data.name);
-        let ar = pn.node.insert(newdata.name, newdata);
-        if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
-      } catch (err) {
-        throw err;
-      }
-    } else {
-      folderCreate();
-      if (InputVal == "") return;
-
-      formData.append("full_name", data.full_name + `/${InputVal}`);
-      formData.append("name", InputVal);
-      formData.append("folder_id", data.id);
-
-      try {
-        const res = await createDict(formData, FolInfo.dic);
-        let data = await res.data[0];
-        let ar = pn.node.insert(data.name, data);
-        if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
-        setInputVal("");
-      } catch (err) {
-        console.error(err);
-      }
+      formData.append("dic_type", data.dic_type);
+      formData.append("modify_data", JSON.stringify(data));
     }
+
+    await DictCrud(method, pn, setpn, formData);
   }
 
   return (
@@ -101,8 +85,8 @@ export function CreateDict({ data, pn, setpn }) {
   );
 }
 
-export function DictMenu({ open, setopen, data }) {
-  let { folderCreate } = useStatus();
+export function DictMenu({ open, setopen, data, pn, setpn }) {
+  let { folderCreate, folderModify, DictCrud } = useStatus();
   // 메뉴에 이벤트 발생시
   let menu = useRef(null);
   async function menuEvent(e) {
@@ -114,7 +98,9 @@ export function DictMenu({ open, setopen, data }) {
       e.preventDefault();
       folderCreate(event == "파일생성" ? false : true);
     } else if (event == "이름변경") {
+      folderModify();
     } else {
+      DictCrud("delete", pn, setpn, JSON.stringify(data));
     }
   }
 

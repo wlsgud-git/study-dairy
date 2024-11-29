@@ -1,3 +1,5 @@
+import { useStatus } from "../context/status.js";
+
 class Node {
   constructor(data, info) {
     this.data = data;
@@ -388,15 +390,5 @@ export class Rbtree {
       }
     }
     return result;
-  }
-}
-
-export async function DictDisplay(action, pn, setpn) {
-  // 1 create
-  // 2 modify
-  // 3 delete
-  if (action == 1) {
-  } else if (action == 2) {
-  } else {
   }
 }
