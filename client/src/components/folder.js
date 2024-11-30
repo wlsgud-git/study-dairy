@@ -7,7 +7,8 @@ import { File } from "./file.js";
 let count = 0;
 
 export function Folder({ key, pn, setpn, data }) {
-  let { getDict, currentFol, menuFocusing } = useStatus();
+  let { getDict, currentFol, menuFocusing, DictCrud } = useStatus();
+
   // main
   let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
   function mousedownEvent(e) {
@@ -27,16 +28,13 @@ export function Folder({ key, pn, setpn, data }) {
   let [IsOpen, setIsOpen] = useState(false);
 
   // 폴더 리스트
-  // useEffect(() => {
-  //   let getData = async () => {
-  //     let li = await getDict(data.id);
-  //     li.map((val) => {
-  //       let ar = Fol.node.insert(val.name, val);
-  //       if (ar) setFol((c) => ({ ...c, data: [...c.data, ar] }));
-  //     });
-  //   };
-  //   getData();
-  // }, []);
+  useEffect(() => {
+    let datas = async () =>
+      await DictCrud("get", Fol, setFol, data.id).catch((err) =>
+        console.log(err)
+      );
+    datas();
+  }, []);
 
   return (
     <div className="sd-folder">
@@ -48,6 +46,7 @@ export function Folder({ key, pn, setpn, data }) {
               className={`fa-solid fa-chevron-${IsOpen ? "down" : "right"}`}
             ></i>
           </span>
+
           <span>
             <i className="fa-solid fa-folder"></i>
           </span>

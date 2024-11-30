@@ -357,6 +357,8 @@ export class Rbtree {
   }
 
   lists() {
+    let folid = 0;
+    let fiid = 0;
     let result = [];
 
     let status = true;
@@ -377,6 +379,8 @@ export class Rbtree {
       else {
         while (ls.length) {
           let cur = ls.pop();
+          cur.info.dic_type == "folder" ? (folid += 1) : (fiid += 1);
+          cur.id = cur.info.dic_type == "folder" ? folid : fiid;
           result.push(cur);
 
           if (cur.right) {

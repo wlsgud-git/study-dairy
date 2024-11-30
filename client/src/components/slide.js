@@ -15,7 +15,6 @@ function Slide() {
   useEffect(() => {
     let datas = async () =>
       await DictCrud("get", Fol, setFol, 0).catch((err) => console.log(err));
-
     datas();
   }, []);
 
@@ -79,6 +78,7 @@ function Slide() {
               val.info.dic_type == "folder" ? (
                 <Folder
                   key={val.info.name}
+                  id={val.id}
                   data={val.info}
                   pn={Fol}
                   setpn={setFol}

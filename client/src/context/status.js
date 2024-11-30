@@ -4,19 +4,21 @@ import react, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
 export const StatusContext = createContext();
 
 export const StatusProvider = ({ dictService, children }) => {
-  // 사전관련 --------------------------------------------------------
+  // 사전관련 -------------------------------------------------------
   let [FolInfo, setFolInfo] = useState({
     id: 0,
     create: false,
     dic: true,
     modify: false,
   });
+
   let [FiInfo, setFiInfo] = useState({ id: 0, modify: false });
 
   const DictCrud = useCallback(
@@ -51,6 +53,8 @@ export const StatusProvider = ({ dictService, children }) => {
           let ar = pn.node.insert(val.name, val);
           if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
         });
+        // FolID.current = 0;
+        // FiId.current = 0;
       } else {
         let dd = JSON.parse(data);
         res = await dictService.deleteDict(dd);
@@ -70,6 +74,20 @@ export const StatusProvider = ({ dictService, children }) => {
   const folderModify = () => {
     setFolInfo((c) => ({ ...c, modify: !FolInfo.modify }));
   };
+
+  useEffect(() => {
+    if (FolInfo.create) {
+      let node = document.getElementById(`post${FolInfo.id}`);
+      node.focus();
+    }
+  }, [FolInfo.create]);
+
+  useEffect(() => {
+    if (FolInfo.modify) {
+      let node = document.getElementById(`put${FolInfo.id}`);
+      node.focus();
+    }
+  }, [FolInfo.modify]);
 
   // 파일변환
   const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));

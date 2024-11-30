@@ -53,6 +53,7 @@ export function DictForm({ method, data, pn, setpn }) {
         spellCheck="false"
         value={InputVal}
         ref={forming}
+        id={`${method}${data.id}`}
         onChange={(e) => setInputVal(e.target.value)}
         onBlur={() => (method == "post" || FolInfo.modify ? submitDict() : "")}
         readOnly={
@@ -91,11 +92,11 @@ export function DictMenu({ open, setopen, data, pn, setpn }) {
   let menu = useRef(null);
   async function menuEvent(e) {
     e.stopPropagation();
+    e.preventDefault();
 
     let event = e.target.innerText;
 
     if (event == "파일생성" || event == "폴더생성") {
-      e.preventDefault();
       folderCreate(event == "파일생성" ? false : true);
     } else if (event == "이름변경") {
       folderModify();
