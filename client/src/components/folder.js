@@ -7,7 +7,7 @@ import { File } from "./file.js";
 let count = 0;
 
 export function Folder({ key, pn, setpn, data }) {
-  let { getDict, currentFol, menuFocusing, DictCrud } = useStatus();
+  let { currentFol, menuFocusing, DictCrud } = useStatus();
 
   // main
   let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
@@ -30,9 +30,7 @@ export function Folder({ key, pn, setpn, data }) {
   // 폴더 리스트
   useEffect(() => {
     let datas = async () =>
-      await DictCrud("get", Fol, setFol, data.id).catch((err) =>
-        console.log(err)
-      );
+      await DictCrud("get", Fol, setFol, data.id).catch((err) => alert(err));
     datas();
   }, []);
 

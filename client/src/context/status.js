@@ -7,6 +7,7 @@ import react, {
   useRef,
   useState,
 } from "react";
+import { Rbtree } from "../middleware/dict";
 
 export const StatusContext = createContext();
 
@@ -18,8 +19,6 @@ export const StatusProvider = ({ dictService, children }) => {
     dic: true,
     modify: false,
   });
-
-  let [FiInfo, setFiInfo] = useState({ id: 0, modify: false });
 
   const DictCrud = useCallback(
     async (action, pn, setpn, data) => {
@@ -53,8 +52,6 @@ export const StatusProvider = ({ dictService, children }) => {
           let ar = pn.node.insert(val.name, val);
           if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
         });
-        // FolID.current = 0;
-        // FiId.current = 0;
       } else {
         let dd = JSON.parse(data);
         res = await dictService.deleteDict(dd);
@@ -67,30 +64,47 @@ export const StatusProvider = ({ dictService, children }) => {
     [dictService]
   );
 
-  // 폴더변환
+  // 폴더 이벤트
   const currentFol = (id) => setFolInfo((c) => ({ ...c, id: id }));
   const folderCreate = (dic = false) =>
     setFolInfo((c) => ({ ...c, create: !FolInfo.create, dic: dic }));
-  const folderModify = () => {
+  const folderModify = () =>
     setFolInfo((c) => ({ ...c, modify: !FolInfo.modify }));
-  };
 
   useEffect(() => {
     if (FolInfo.create) {
-      let node = document.getElementById(`post${FolInfo.id}`);
+      let node = document.getElementById(`folder_post${FolInfo.id}`);
       node.focus();
     }
   }, [FolInfo.create]);
-
   useEffect(() => {
+    console.log("folinfo.modify:", FolInfo.modify);
     if (FolInfo.modify) {
-      let node = document.getElementById(`put${FolInfo.id}`);
+      let node = document.getElementById(`folder_put${FolInfo.id}`);
       node.focus();
     }
   }, [FolInfo.modify]);
 
   // 파일변환
+  let [FiInfo, setFiInfo] = useState({
+    id: 0,
+    modify: false,
+    node: new Rbtree(),
+    data: [[]],
+  });
   const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));
+  const fileModify = () => setFiInfo((c) => ({ ...c, modify: !FiInfo.modify }));
+  const currentFileEvent = (event) => {
+    console.log(event);
+  };
+
+  useEffect(() => {
+    console.log("FiInfo.modify:", FiInfo.modify);
+    if (FiInfo.modify) {
+      let node = document.getElementById(`file_put${FiInfo.id}`);
+      node.focus();
+    }
+  }, [FiInfo.modify]);
 
   // 메뉴관련 ------------------------------------------
   let [Menu, setMenu] = useState({
@@ -156,17 +170,21 @@ export const StatusProvider = ({ dictService, children }) => {
       menuMenu,
 
       // dictionary
-      FolInfo,
-
       DictCrud,
 
+      // folder
+      FolInfo,
       currentFol,
       folderCreate,
       folderModify,
 
+      // file
+      FiInfo,
       currentFi,
+      fileModify,
+      currentFileEvent,
     }),
-    [Darkmode, Menu, FolInfo]
+    [Darkmode, Menu, FolInfo, FiInfo]
   );
 
   return (

@@ -8,7 +8,7 @@ class DictData {
 
   async getDict(id, dic) {
     try {
-      let query = `select * from ${dic} where id >= 1 and folder_id=$1 order by name asc`;
+      let query = `select * from ${dic} where id >= 1 and folder_id=$1`;
       const data = [id];
       return await dbPlay(query, data);
     } catch (err) {

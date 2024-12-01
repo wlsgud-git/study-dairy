@@ -4,7 +4,8 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
 export function DictForm({ method, data, pn, setpn }) {
-  let { FolInfo, folderCreate, folderModify, DictCrud } = useStatus();
+  let { FolInfo, FiInfo, folderCreate, folderModify, fileModify, DictCrud } =
+    useStatus();
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
 
@@ -20,7 +21,7 @@ export function DictForm({ method, data, pn, setpn }) {
       formData.append("folder_id", data.id);
       formData.append("dic_type", FolInfo.dic ? "folder" : "file");
     } else {
-      folderModify();
+      data.dic_type == "file" ? fileModify() : folderModify();
       if (InputVal == "" || InputVal == data.name) {
         setInputVal(data.name);
         return;
@@ -53,12 +54,15 @@ export function DictForm({ method, data, pn, setpn }) {
         spellCheck="false"
         value={InputVal}
         ref={forming}
-        id={`${method}${data.id}`}
+        id={`${data.dic_type}_${method}${data.id}`}
         onChange={(e) => setInputVal(e.target.value)}
-        onBlur={() => (method == "post" || FolInfo.modify ? submitDict() : "")}
-        readOnly={
-          method == "put" && FolInfo.id == data.id ? !FolInfo.modify : false
-        }
+        onBlur={submitDict}
+        readOnly={() => {
+          if (method == "put") {
+            if (data.dic_type == "folder") return FolInfo.modify ? false : true;
+            else return FiInfo.modify ? false : true;
+          } else return false;
+        }}
       ></input>
     </form>
   );
@@ -87,19 +91,20 @@ export function CreateDict({ data, pn, setpn }) {
 }
 
 export function DictMenu({ open, setopen, data, pn, setpn }) {
-  let { folderCreate, folderModify, DictCrud } = useStatus();
+  let { folderCreate, folderModify, DictCrud, fileModify } = useStatus();
   // 메뉴에 이벤트 발생시
   let menu = useRef(null);
   async function menuEvent(e) {
     e.stopPropagation();
-    e.preventDefault();
 
     let event = e.target.innerText;
 
     if (event == "파일생성" || event == "폴더생성") {
+      e.preventDefault();
       folderCreate(event == "파일생성" ? false : true);
     } else if (event == "이름변경") {
-      folderModify();
+      e.preventDefault();
+      data.dic_type == "file" ? fileModify() : folderModify();
     } else {
       DictCrud("delete", pn, setpn, JSON.stringify(data));
     }
@@ -133,4 +138,10 @@ export function DictMenu({ open, setopen, data, pn, setpn }) {
       <button onMouseDown={menuEvent}>삭제</button>
     </div>
   );
+}
+
+export function CurrentFiles({}) {
+  // let {}
+  useEffect(() => {}, []);
+  return <div className="sd-current_play_files"></div>;
 }

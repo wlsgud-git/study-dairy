@@ -12,8 +12,8 @@ export function File({ key, pn, setpn, data }) {
   function mousedownEvent(e) {
     e.stopPropagation();
     menuFocusing(true);
+    currentFi(data.id);
     if (e.buttons == 1) {
-      currentFi(data.id);
     } else {
       e.preventDefault();
       setContextMenu(true);

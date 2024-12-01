@@ -72,7 +72,11 @@ function Slide() {
         className="sd-folder_list_container"
         onMouseDown={() => currentFol(0)}
       >
-        <CreateDict data={{ id: 0, full_name: "" }} pn={Fol} setpn={setFol} />
+        <CreateDict
+          data={{ id: 0, dic_type: "folder" }}
+          pn={Fol}
+          setpn={setFol}
+        />
         {Fol.data[Fol.data.length - 1].length
           ? Fol.data[Fol.data.length - 1].map((val) =>
               val.info.dic_type == "folder" ? (
