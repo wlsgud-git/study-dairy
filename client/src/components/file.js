@@ -7,6 +7,7 @@ export function File({ key, pn, setpn, data }) {
 
   // menu
   let [ContextMenu, setContextMenu] = useState(false);
+  let [Modify, setModify] = useState(false);
 
   // 파일의 클릭이벤트 발생시
   function mousedownEvent(e) {
@@ -29,7 +30,14 @@ export function File({ key, pn, setpn, data }) {
             <i className="fa-solid fa-file"></i>
           </span>
         </div>
-        <DictForm method="put" data={data} pn={pn} setpn={setpn} />
+        <DictForm
+          method="put"
+          data={data}
+          pn={pn}
+          setpn={setpn}
+          input={Modify}
+          setinput={setModify}
+        />
       </div>
       {/* menu */}
       <DictMenu
@@ -38,6 +46,8 @@ export function File({ key, pn, setpn, data }) {
         data={data}
         pn={pn}
         setpn={setpn}
+        input={Modify}
+        setinput={setModify}
       />
     </div>
   );

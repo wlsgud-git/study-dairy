@@ -16,8 +16,7 @@ export const StatusProvider = ({ dictService, children }) => {
   let [FolInfo, setFolInfo] = useState({
     id: 0,
     create: false,
-    dic: true,
-    modify: false,
+    dic: false,
   });
 
   const DictCrud = useCallback(
@@ -59,6 +58,7 @@ export const StatusProvider = ({ dictService, children }) => {
           dd.dic_type == "file" ? "힣힣힣힣힣" + dd.name : dd.name
         );
         if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
+        currentFol(0);
       }
     },
     [dictService]
@@ -68,8 +68,6 @@ export const StatusProvider = ({ dictService, children }) => {
   const currentFol = (id) => setFolInfo((c) => ({ ...c, id: id }));
   const folderCreate = (dic = false) =>
     setFolInfo((c) => ({ ...c, create: !FolInfo.create, dic: dic }));
-  const folderModify = () =>
-    setFolInfo((c) => ({ ...c, modify: !FolInfo.modify }));
 
   useEffect(() => {
     if (FolInfo.create) {
@@ -77,34 +75,12 @@ export const StatusProvider = ({ dictService, children }) => {
       node.focus();
     }
   }, [FolInfo.create]);
-  useEffect(() => {
-    console.log("folinfo.modify:", FolInfo.modify);
-    if (FolInfo.modify) {
-      let node = document.getElementById(`folder_put${FolInfo.id}`);
-      node.focus();
-    }
-  }, [FolInfo.modify]);
 
   // 파일변환
   let [FiInfo, setFiInfo] = useState({
     id: 0,
-    modify: false,
-    node: new Rbtree(),
-    data: [[]],
   });
   const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));
-  const fileModify = () => setFiInfo((c) => ({ ...c, modify: !FiInfo.modify }));
-  const currentFileEvent = (event) => {
-    console.log(event);
-  };
-
-  useEffect(() => {
-    console.log("FiInfo.modify:", FiInfo.modify);
-    if (FiInfo.modify) {
-      let node = document.getElementById(`file_put${FiInfo.id}`);
-      node.focus();
-    }
-  }, [FiInfo.modify]);
 
   // 메뉴관련 ------------------------------------------
   let [Menu, setMenu] = useState({
@@ -176,13 +152,10 @@ export const StatusProvider = ({ dictService, children }) => {
       FolInfo,
       currentFol,
       folderCreate,
-      folderModify,
 
       // file
       FiInfo,
       currentFi,
-      fileModify,
-      currentFileEvent,
     }),
     [Darkmode, Menu, FolInfo, FiInfo]
   );

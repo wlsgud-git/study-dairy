@@ -4,8 +4,6 @@ import { Rbtree } from "../middleware/dict.js";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 import { File } from "./file.js";
 
-let count = 0;
-
 export function Folder({ key, pn, setpn, data }) {
   let { currentFol, menuFocusing, DictCrud } = useStatus();
 
@@ -26,8 +24,10 @@ export function Folder({ key, pn, setpn, data }) {
   let [ContextMenu, setContextMenu] = useState(false);
   // list
   let [IsOpen, setIsOpen] = useState(false);
+  // modify
+  let [ModInput, setModInput] = useState(false);
 
-  // 폴더 리스트
+  // 현 폴더의 자식들
   useEffect(() => {
     let datas = async () =>
       await DictCrud("get", Fol, setFol, data.id).catch((err) => alert(err));
@@ -49,7 +49,14 @@ export function Folder({ key, pn, setpn, data }) {
             <i className="fa-solid fa-folder"></i>
           </span>
         </div>
-        <DictForm method="put" pn={pn} setpn={setpn} data={data} />
+        <DictForm
+          method="put"
+          pn={pn}
+          setpn={setpn}
+          data={data}
+          input={ModInput}
+          setinput={setModInput}
+        />
       </div>
       {/* menu */}
       <DictMenu
@@ -58,6 +65,8 @@ export function Folder({ key, pn, setpn, data }) {
         data={data}
         pn={pn}
         setpn={setpn}
+        input={ModInput}
+        setinput={setModInput}
       />
       {/* lists */}
       <ul className="sd-folder_lists">

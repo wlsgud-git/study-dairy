@@ -1,5 +1,3 @@
-import { useStatus } from "../context/status.js";
-
 class Node {
   constructor(data, info) {
     this.data = data;
@@ -316,6 +314,7 @@ export class Rbtree {
   }
   modify() {}
   delete(data) {
+    this.length -= 1;
     // dn 삭제될 노드
     // sn 스왑할 노드
     // snp 스왑할 노드의 부모노드
@@ -342,7 +341,6 @@ export class Rbtree {
           this.head.parent = null;
           this.head.tf = true;
         }
-        this.length -= 1;
         delete this.check[data];
         return this.lists();
       } else {
@@ -351,14 +349,12 @@ export class Rbtree {
     } else if (dn.left && dn.left.data == sn.data) snp = dn;
     else snp = sn.parent;
     this.deleteValidate(dn, sn, snp);
-    this.length -= 1;
     delete this.check[data];
     return this.lists();
   }
 
   lists() {
-    let folid = 0;
-    let fiid = 0;
+    if (this.length == 0) return [];
     let result = [];
 
     let status = true;
@@ -379,8 +375,6 @@ export class Rbtree {
       else {
         while (ls.length) {
           let cur = ls.pop();
-          cur.info.dic_type == "folder" ? (folid += 1) : (fiid += 1);
-          cur.id = cur.info.dic_type == "folder" ? folid : fiid;
           result.push(cur);
 
           if (cur.right) {

@@ -3,11 +3,15 @@ import "../css/dict.css";
 import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
-export function DictForm({ method, data, pn, setpn }) {
-  let { FolInfo, FiInfo, folderCreate, folderModify, fileModify, DictCrud } =
-    useStatus();
+export function DictForm({ method, data, pn, setpn, input, setinput }) {
+  let { FolInfo, FiInfo, folderCreate, folderModify, DictCrud } = useStatus();
+
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
+
+  useEffect(() => {
+    if (input) forming.current.focus();
+  }, [input]);
 
   async function submitDict(e) {
     let formData = new FormData();
@@ -21,7 +25,7 @@ export function DictForm({ method, data, pn, setpn }) {
       formData.append("folder_id", data.id);
       formData.append("dic_type", FolInfo.dic ? "folder" : "file");
     } else {
-      data.dic_type == "file" ? fileModify() : folderModify();
+      setinput(false);
       if (InputVal == "" || InputVal == data.name) {
         setInputVal(data.name);
         return;
@@ -36,7 +40,12 @@ export function DictForm({ method, data, pn, setpn }) {
       formData.append("modify_data", JSON.stringify(data));
     }
 
-    await DictCrud(method, pn, setpn, formData);
+    try {
+      await DictCrud(method, pn, setpn, formData);
+      setInputVal(method == "post" ? "" : InputVal);
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   return (
@@ -57,12 +66,7 @@ export function DictForm({ method, data, pn, setpn }) {
         id={`${data.dic_type}_${method}${data.id}`}
         onChange={(e) => setInputVal(e.target.value)}
         onBlur={submitDict}
-        readOnly={() => {
-          if (method == "put") {
-            if (data.dic_type == "folder") return FolInfo.modify ? false : true;
-            else return FiInfo.modify ? false : true;
-          } else return false;
-        }}
+        readOnly={method == "put" ? !input : false}
       ></input>
     </form>
   );
@@ -90,7 +94,7 @@ export function CreateDict({ data, pn, setpn }) {
   );
 }
 
-export function DictMenu({ open, setopen, data, pn, setpn }) {
+export function DictMenu({ open, setopen, data, pn, setpn, input, setinput }) {
   let { folderCreate, folderModify, DictCrud, fileModify } = useStatus();
   // 메뉴에 이벤트 발생시
   let menu = useRef(null);
@@ -104,7 +108,7 @@ export function DictMenu({ open, setopen, data, pn, setpn }) {
       folderCreate(event == "파일생성" ? false : true);
     } else if (event == "이름변경") {
       e.preventDefault();
-      data.dic_type == "file" ? fileModify() : folderModify();
+      setinput(true);
     } else {
       DictCrud("delete", pn, setpn, JSON.stringify(data));
     }

@@ -10,6 +10,7 @@ import { File } from "./file.js";
 function Slide() {
   let { Menu, menuFocusing, DictCrud, currentFol, folderCreate } = useStatus();
 
+  // main
   let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
 
   useEffect(() => {
@@ -73,7 +74,7 @@ function Slide() {
         onMouseDown={() => currentFol(0)}
       >
         <CreateDict
-          data={{ id: 0, dic_type: "folder" }}
+          data={{ id: 0, dic_type: "folder", full_name: "" }}
           pn={Fol}
           setpn={setFol}
         />

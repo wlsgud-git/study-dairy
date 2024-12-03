@@ -6,7 +6,7 @@ create table folder(
 
     folder_id integer not null, --부모 폴더
 
-    FOREIGN KEY (folder_id) REFERENCES folders (id) on delete cascade on update cascade,
+    FOREIGN KEY (folder_id) REFERENCES folder (id) on delete cascade on update cascade
 )
 
 create table file(
@@ -19,25 +19,5 @@ create table file(
 
     folder_id integer not null, --부모 폴더
     
-    FOREIGN KEY (folder_id) REFERENCES folders (id) on delete cascade on update cascade,
-)
-
-
-create table testfol(
-    id serial not null primary key,
-    full_name varchar not null,
-    name varchar not null,
-    fol_id integer not null, 
-    
-    FOREIGN KEY (fol_id) REFERENCES testfol (id) on delete cascade on update cascade
-)
-
-create table testfi(
-    id serial not null primary key,
-    full_name varchar not null,
-    name varchar not null,
-    content varchar not null default '',
-    fol_id integer not null, 
-    
-    FOREIGN KEY (fol_id) REFERENCES testfol (id) on delete cascade on update cascade
+    FOREIGN KEY (folder_id) REFERENCES folder (id) on delete cascade on update cascade
 )
