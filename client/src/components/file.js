@@ -2,12 +2,20 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 
-export function File({ key, pn, setpn, data }) {
+export function File({ pn, setpn, data, reData }) {
+  let Target = reData.map((val) => val);
   let { currentFi, menuFocusing } = useStatus();
 
   // menu
+  let [DictData, setDictData] = useState(data);
   let [ContextMenu, setContextMenu] = useState(false);
   let [Modify, setModify] = useState(false);
+
+  useEffect(() => {
+    let text = "";
+    Target.map((val) => (text += `/${val.name}`));
+    setDictData((c) => ({ ...c, allName: `${text}/${DictData.name}` }));
+  }, [...Target, DictData.name]);
 
   // 파일의 클릭이벤트 발생시
   function mousedownEvent(e) {
@@ -22,7 +30,7 @@ export function File({ key, pn, setpn, data }) {
   }
 
   return (
-    <div className="sd-file">
+    <div className="sd-file" title={DictData.allName}>
       {/* main */}
       <div className="sd-file_main" onMouseDown={mousedownEvent}>
         <div className="icons_box">

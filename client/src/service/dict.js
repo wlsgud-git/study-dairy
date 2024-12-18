@@ -3,6 +3,12 @@ export class DictService {
     this.http = http;
   }
 
+  async searchDict(text) {
+    return this.http.httpFetch(`/dict/search?s=${text}`, {
+      method: "get",
+    });
+  }
+
   async getDictDetail(id) {
     return this.http.httpFetch(`/dict?id=${id}`, {
       method: "get",

@@ -282,8 +282,8 @@ export class Rbtree {
     }
   }
 
-  insert(data, info) {
-    if (info.dic_type == "file") data = "힣힣힣힣힣" + data;
+  insert(info) {
+    let data = `${info.dic_type == "file" ? "b" : "a"}${info.name}`;
     if (data in this.check) return undefined;
     this.length += 1;
     let newNode = new Node(data, info);
@@ -313,7 +313,8 @@ export class Rbtree {
     return this.lists();
   }
   modify() {}
-  delete(data) {
+  delete(info) {
+    let data = `${info.dic_type == "file" ? "b" : "a"}${info.name}`;
     this.length -= 1;
     // dn 삭제될 노드
     // sn 스왑할 노드

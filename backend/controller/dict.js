@@ -1,14 +1,25 @@
 import { dic } from "../data/dict.js";
 
-export async function getDict(req, res) {
+export async function searchDict(req, res) {
   try {
+    let query = req.query["s"];
     let data = [];
-    let id = req.query["id"];
-    let fol = await dic.getDict(id, "folder");
-    let fi = await dic.getDict(id, "file");
+    let fol = await dic.searchDict(query, "folder");
+    let fi = await dic.searchDict(query, "file");
 
     fol.map((val) => data.push(val));
     fi.map((val) => data.push(val));
+    return res.status(200).json({ data });
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getDict(req, res) {
+  try {
+    let id = req.query["id"];
+    let data = await dic.getDict(id);
+
     return res.status(200).json({ data });
   } catch (err) {
     throw err;
@@ -30,12 +41,13 @@ export async function modifyDict(req, res) {
     throw err;
   }
 }
+
 export async function deleteDict(req, res) {
   try {
     let id = req.query.id;
     let dic_type = req.query.dic_type;
-    let response = await dic.deleteDict(id, dic_type);
-    return res.status(200).json({ message: "삭제완료" });
+    let data = await dic.deleteDict(id, dic_type);
+    return res.status(200).json({ data });
   } catch (err) {
     throw err;
   }

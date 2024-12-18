@@ -7,7 +7,7 @@ import react, {
   useRef,
   useState,
 } from "react";
-import { Rbtree } from "../middleware/dict";
+import { Rbtree } from "../middleware/dict.js";
 
 export const StatusContext = createContext();
 
@@ -24,41 +24,53 @@ export const StatusProvider = ({ dictService, children }) => {
       let res;
       let newData;
 
-      if (action == "get" || action == "post" || action == "put") {
-        switch (action) {
-          case "get":
-            res = await dictService.getDictDetail(data);
-            newData = await res.data;
-            break;
-          case "post":
-            res = await dictService.createDict(data);
-            newData = await res.data;
-            break;
-          default:
-            res = await dictService.modifyDict(data);
-            newData = await res.data;
-            break;
-        }
+      // 백엔드에서 데이터 처리후 값
+      switch (action) {
+        case "get":
+          res = await dictService.getDictDetail(data.id);
+          newData = await res.data;
+          break;
+        case "post":
+          res = await dictService.createDict(data);
+          newData = await res.data;
+          break;
+        case "put":
+          res = await dictService.modifyDict(data);
+          newData = await res.data;
+          break;
+        default:
+          let dd = JSON.parse(data);
+          res = await dictService.deleteDict(dd);
+          newData = await res.data;
+          break;
+      }
 
-        if (action == "put") {
-          let dd = JSON.parse(data.get("modify_data"));
-
-          let del_name =
-            dd.dic_type == "file" ? "힣힣힣힣힣" + dd.name : dd.name;
-          pn.node.delete(del_name);
-        }
+      if (action == "delete" || action == "put") {
         newData.map((val) => {
-          let ar = pn.node.insert(val.name, val);
-          if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
+          let ar = pn.node.delete(
+            action == "put" ? JSON.parse(data.get("modify_data")) : val
+          );
+          if (ar) setpn((c) => ({ ...c, arr: ar.map((val) => val) }));
         });
-      } else {
-        let dd = JSON.parse(data);
-        res = await dictService.deleteDict(dd);
-        let ar = pn.node.delete(
-          dd.dic_type == "file" ? "힣힣힣힣힣" + dd.name : dd.name
-        );
-        if (ar) setpn((c) => ({ ...c, data: [...c.data, ar] }));
-        currentFol(0);
+        if (action == "delete") return;
+      }
+
+      newData.map((val) => {
+        let ar = pn.node.insert(val);
+        if (ar) setpn((c) => ({ ...c, arr: ar.map((val) => val) }));
+      });
+    },
+    [dictService]
+  );
+
+  const SearchDict = useCallback(
+    async (text) => {
+      const response = await dictService.searchDict(text);
+
+      try {
+        return await response.data;
+      } catch (err) {
+        throw err;
       }
     },
     [dictService]
@@ -77,9 +89,8 @@ export const StatusProvider = ({ dictService, children }) => {
   }, [FolInfo.create]);
 
   // 파일변환
-  let [FiInfo, setFiInfo] = useState({
-    id: 0,
-  });
+  let [FiInfo, setFiInfo] = useState({ id: 0 });
+
   const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));
 
   // 메뉴관련 ------------------------------------------
@@ -147,6 +158,7 @@ export const StatusProvider = ({ dictService, children }) => {
 
       // dictionary
       DictCrud,
+      SearchDict,
 
       // folder
       FolInfo,

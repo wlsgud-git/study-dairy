@@ -93,7 +93,7 @@
   background-color: red;
   border-radius: 5px;
   padding: 4px 0px;
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;

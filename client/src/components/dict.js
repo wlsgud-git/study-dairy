@@ -4,7 +4,8 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
 export function DictForm({ method, data, pn, setpn, input, setinput }) {
-  let { FolInfo, FiInfo, folderCreate, folderModify, DictCrud } = useStatus();
+  let { FolInfo, FiInfo, folderCreate, folderModify, DictCrud, ng } =
+    useStatus();
 
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
@@ -15,31 +16,33 @@ export function DictForm({ method, data, pn, setpn, input, setinput }) {
 
   async function submitDict(e) {
     let formData = new FormData();
-
     if (method == "post") {
       folderCreate();
       if (InputVal == "") return;
+      let fullname = data.full_name.map((val) => val);
+      fullname.push(InputVal);
 
-      formData.append("full_name", data.full_name + `/${InputVal}`);
+      fullname.forEach((val) => formData.append("full_name[]", val));
+      formData.append("nidx", data.nidx + 1);
       formData.append("name", InputVal);
       formData.append("folder_id", data.id);
       formData.append("dic_type", FolInfo.dic ? "folder" : "file");
     } else {
+      if (!input) return;
       setinput(false);
-      if (InputVal == "" || InputVal == data.name) {
-        setInputVal(data.name);
+      if (InputVal == "" || InputVal == data.full_name) {
+        setInputVal(data.full_name);
         return;
       }
-      let text = data.full_name.split("/").slice(0, -1).join("/");
-      let full_name = text == "" ? "/" + InputVal : text + "/" + InputVal;
+      data.full_name[data.nidx - 1] = InputVal;
+      let fullname = data.full_name.map((val) => val);
 
-      formData.append("full_name", full_name);
+      fullname.forEach((val) => formData.append("full_name[]", val));
       formData.append("name", InputVal);
       formData.append("id", data.id);
       formData.append("dic_type", data.dic_type);
       formData.append("modify_data", JSON.stringify(data));
     }
-
     try {
       await DictCrud(method, pn, setpn, formData);
       setInputVal(method == "post" ? "" : InputVal);
@@ -142,10 +145,4 @@ export function DictMenu({ open, setopen, data, pn, setpn, input, setinput }) {
       <button onMouseDown={menuEvent}>삭제</button>
     </div>
   );
-}
-
-export function CurrentFiles({}) {
-  // let {}
-  useEffect(() => {}, []);
-  return <div className="sd-current_play_files"></div>;
 }

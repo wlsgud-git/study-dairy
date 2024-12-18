@@ -8,16 +8,36 @@ import { Folder } from "./folder.js";
 import { File } from "./file.js";
 
 function Slide() {
-  let { Menu, menuFocusing, DictCrud, currentFol, folderCreate } = useStatus();
+  let { Menu, menuFocusing, DictCrud, currentFol, folderCreate, SearchDict } =
+    useStatus();
 
   // main
-  let [Fol, setFol] = useState({ node: new Rbtree(), data: [[]] });
+  let [Fol, setFol] = useState({ node: new Rbtree(), arr: [] });
 
   useEffect(() => {
     let datas = async () =>
-      await DictCrud("get", Fol, setFol, 0).catch((err) => console.log(err));
+      await DictCrud("get", Fol, setFol, { id: 0, idx: null }).catch((err) =>
+        alert(err)
+      );
     datas();
   }, []);
+
+  // search
+  let [SearchVal, setSearchVal] = useState("");
+  let [SearchResult, setSearchResult] = useState([]);
+
+  useEffect(() => {
+    let result = async () => {
+      if (SearchVal === "") return;
+      try {
+        let data = await SearchDict(SearchVal);
+        setSearchResult(data.map((val) => val));
+      } catch (err) {
+        alert(err);
+      }
+    };
+    result();
+  }, [SearchVal]);
 
   return (
     <div
@@ -36,6 +56,8 @@ function Slide() {
                 type="text"
                 className="sd-f_search_input"
                 placeholder="폴더 / 파일 검색"
+                value={SearchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
               />
             </div>
             <div className="sd-f_search_btnbox">
@@ -45,7 +67,11 @@ function Slide() {
             </div>
           </form>
           {/* 파일 검색 결과 */}
-          <ul className="sd-f_search_result"></ul>
+          <ul className="sd-f_search_result">
+            {SearchResult.length
+              ? SearchResult.map((val) => <span>{val.name}</span>)
+              : "관련 사전이 없습니다"}
+          </ul>
         </div>
         {/* 폴더추가 */}
         <div className="sd-f_add_container">
@@ -74,17 +100,17 @@ function Slide() {
         onMouseDown={() => currentFol(0)}
       >
         <CreateDict
-          data={{ id: 0, dic_type: "folder", full_name: "" }}
+          data={{ id: 0, nidx: 0, dic_type: "folder", full_name: [] }}
           pn={Fol}
           setpn={setFol}
         />
-        {Fol.data[Fol.data.length - 1].length
-          ? Fol.data[Fol.data.length - 1].map((val) =>
+        {Fol.arr.length
+          ? Fol.arr.map((val) =>
               val.info.dic_type == "folder" ? (
                 <Folder
                   key={val.info.name}
-                  id={val.id}
                   data={val.info}
+                  reData={[]}
                   pn={Fol}
                   setpn={setFol}
                 />
@@ -92,6 +118,7 @@ function Slide() {
                 <File
                   key={val.info.name}
                   data={val.info}
+                  reData={[]}
                   pn={Fol}
                   setpn={setFol}
                 />

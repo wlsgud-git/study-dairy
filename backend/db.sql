@@ -1,6 +1,7 @@
 create table folder(
     id serial not null primary key, --고유 아디 
-    full_name varchar not null unique default '', --전체 폴더 이름
+    nidx integer not null,
+    full_name text[] not null, --전체 폴더 이름
     name varchar(20) not null, --폴더 이름
     dic_type varchar(6) default 'folder' not null,
 
@@ -11,7 +12,8 @@ create table folder(
 
 create table file(
     id serial not null primary key, --파일 아이디
-    full_name varchar not null unique, --전체 파일 이름
+    nidx integer not null,
+    full_name text[] not null, --전체 파일 이름
     name varchar(20) not null, --파일 이름
     title varchar(30) not null default '',
     content varchar not null default '',

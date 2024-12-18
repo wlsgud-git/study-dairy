@@ -1,9 +1,12 @@
 import { useStatus } from "../context/status.js";
 import "../css/memo.css";
 import { useState, useEffect } from "react";
+import { MemoContent } from "./memoContent.js";
 
 function Memo() {
-  let { Darkmode, Menu, changeMode, menuFocusing, menuMenu } = useStatus();
+  let { Darkmode, Menu, changeMode, menuFocusing, menuMenu, FiInfo } =
+    useStatus();
+
   return (
     <div
       className="sd-main_container"
@@ -12,6 +15,7 @@ function Memo() {
     >
       {/* 메모부분 위쪽 부분기능 */}
       <div className="sd-main_top">
+        {/* 메뉴 활성화 버튼 */}
         <button
           className="sd-side_display_btn"
           onClickCapture={(e) => {
@@ -26,12 +30,13 @@ function Memo() {
             }`}
           ></i>
         </button>
+        {/* 다크모드 버튼 */}
         <button className="sd-color_theme_btn" onClick={() => changeMode()}>
           <i className={`fa-solid fa-${Darkmode ? "sun" : "moon"}`}></i>
         </button>
       </div>
-      <ul className="sd-current_studing_list"></ul>
-      <div className=""></div>
+      {/* 메모 content 부분 */}
+      <MemoContent />
     </div>
   );
 }
