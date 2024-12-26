@@ -4,7 +4,9 @@
 .sd-side_container {
   width: 100%;
   max-width: var(--sd-side-width);
+  min-width: var(--sd-side-width);
   height: 100vh;
+  border: 1px solid green;
   flex-direction: column;
   align-items: center;
   border-right: 1px solid var(--theme-diff-color);

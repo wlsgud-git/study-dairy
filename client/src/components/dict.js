@@ -4,8 +4,7 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 
 export function DictForm({ method, data, pn, setpn, input, setinput }) {
-  let { FolInfo, FiInfo, folderCreate, folderModify, DictCrud, ng } =
-    useStatus();
+  let { FolInfo, FiInfo, folderCreate, DictCrud } = useStatus();
 
   let forming = useRef(null);
   let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
@@ -98,7 +97,7 @@ export function CreateDict({ data, pn, setpn }) {
 }
 
 export function DictMenu({ open, setopen, data, pn, setpn, input, setinput }) {
-  let { folderCreate, folderModify, DictCrud, fileModify } = useStatus();
+  let { folderCreate, DictCrud, currentFol, currentFi } = useStatus();
   // 메뉴에 이벤트 발생시
   let menu = useRef(null);
   async function menuEvent(e) {
@@ -114,6 +113,7 @@ export function DictMenu({ open, setopen, data, pn, setpn, input, setinput }) {
       setinput(true);
     } else {
       DictCrud("delete", pn, setpn, JSON.stringify(data));
+      data.dic_type == "folder" ? currentFol(0) : currentFi(0);
     }
   }
 

@@ -96,3 +96,12 @@
   background-color: inherit;
   cursor: default;
 }
+
+.sd-file_li {
+  border: 1px solid black;
+  width: 100px;
+  height: 100%;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}

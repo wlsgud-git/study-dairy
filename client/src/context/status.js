@@ -18,6 +18,10 @@ export const StatusProvider = ({ dictService, children }) => {
     create: false,
     dic: false,
   });
+  let [FileList, setFileList] = useState({
+    index: -1,
+    list: [],
+  });
 
   const DictCrud = useCallback(
     async (action, pn, setpn, data) => {
@@ -46,6 +50,10 @@ export const StatusProvider = ({ dictService, children }) => {
       }
 
       if (action == "delete" || action == "put") {
+        manageFileList(
+          action,
+          action == "put" ? JSON.parse(data.get("modify_data")) : data
+        );
         newData.map((val) => {
           let ar = pn.node.delete(
             action == "put" ? JSON.parse(data.get("modify_data")) : val
@@ -60,7 +68,7 @@ export const StatusProvider = ({ dictService, children }) => {
         if (ar) setpn((c) => ({ ...c, arr: ar.map((val) => val) }));
       });
     },
-    [dictService]
+    [dictService, FileList]
   );
 
   const SearchDict = useCallback(
@@ -92,6 +100,83 @@ export const StatusProvider = ({ dictService, children }) => {
   let [FiInfo, setFiInfo] = useState({ id: 0 });
 
   const currentFi = (id) => setFiInfo((c) => ({ ...c, id: id }));
+
+  useEffect(() => {
+    let list = async () => {
+      await dictService
+        .getFileList()
+        .then((li) =>
+          setFileList((c) => ({ ...c, list: li.list.map((val) => val) }))
+        )
+        .catch((err) => alert(err));
+    };
+    list();
+  }, []);
+
+  const manageFileList = useCallback(
+    async (action, info) => {
+      let tf = true;
+      FileList.list.map((val, index) => {
+        if (action == "insert" && info.id == val.id) {
+          setFileList((c) => ({ ...c, index: index }));
+          tf = false;
+          return;
+        } else if (
+          (action == "put" || action == "delete") &&
+          val.full_name[info.nidx - 1] == info.name
+        ) {
+          return;
+        }
+        if (action !== "insert" && index == FileList.list.length - 1)
+          tf = false;
+      });
+
+      if (!tf) return;
+      handleFileList(action, info);
+    },
+    [FileList.list]
+  );
+
+  const handleFileList = useCallback(
+    async (action, info) => {
+      let formData = new FormData();
+      if (action == "insert") {
+        let data = await dictService.getFile(info.id);
+        for (const key in data.data[0]) {
+          if (key == "full_name")
+            info["full_name"].forEach((val) =>
+              formData.append("full_name[]", val)
+            );
+          else formData.append(key, data.data[0][key]);
+        }
+        await dictService
+          .insertFileList(formData)
+          .then((data) =>
+            setFileList((c) => ({
+              ...c,
+              index: FileList.list.length,
+              list: [...c.list, data.data[0]],
+            }))
+          )
+          .catch((err) => alert(err));
+      } else if (action == "put") {
+      } else {
+        await dictService
+          .deleteFileList(info.name, info.nidx)
+          .then((li) => {
+            setFileList((c) => ({
+              ...c,
+              index: 0,
+              list: c.list.filter(
+                (val) => val.full_name[info.nidx - 1] !== info.name
+              ),
+            }));
+          })
+          .catch((err) => alert(err));
+      }
+    },
+    [FileList.list]
+  );
 
   // 메뉴관련 ------------------------------------------
   let [Menu, setMenu] = useState({
@@ -168,8 +253,13 @@ export const StatusProvider = ({ dictService, children }) => {
       // file
       FiInfo,
       currentFi,
+
+      // file list
+      FileList,
+      manageFileList,
+      handleFileList,
     }),
-    [Darkmode, Menu, FolInfo, FiInfo]
+    [Darkmode, Menu, FolInfo, FiInfo, FileList]
   );
 
   return (

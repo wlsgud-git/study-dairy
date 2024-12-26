@@ -3,12 +3,6 @@ export class DictService {
     this.http = http;
   }
 
-  async searchDict(text) {
-    return this.http.httpFetch(`/dict/search?s=${text}`, {
-      method: "get",
-    });
-  }
-
   async getDictDetail(id) {
     return this.http.httpFetch(`/dict?id=${id}`, {
       method: "get",
@@ -36,5 +30,34 @@ export class DictService {
         method: "delete",
       }
     );
+  }
+
+  // file
+  async searchDict(text) {
+    return this.http.httpFetch(`/dict/search?s=${text}`, {
+      method: "get",
+    });
+  }
+
+  async getFile(id) {
+    return this.http.httpFetch(`/file?id=${id}`, { method: "get" });
+  }
+
+  // fileList
+  async getFileList() {
+    return this.http.httpFetch(`/fileList`, { method: "get" });
+  }
+
+  async insertFileList(data) {
+    return this.http.httpFetch(`/fileList`, {
+      method: "post",
+      body: data,
+    });
+  }
+
+  async deleteFileList(name, nidx) {
+    return this.http.httpFetch(`/fileList?name=${name}&nidx=${nidx}`, {
+      method: "delete",
+    });
   }
 }

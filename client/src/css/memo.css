@@ -5,6 +5,7 @@
   width: 100%;
   height: 100%;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .sd-main_top {
@@ -37,6 +38,48 @@
   color: var(--theme-font-color);
 }
 
+/* file list */
+.file_lists {
+  width: 100%;
+  height: var(--file-list-height);
+  border-bottom: 1px solid var(--theme-diff-color);
+  display: flex;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+.sd-li_file {
+  width: 90px;
+  height: 100%;
+  border: 1px solid var(--theme-diff-color);
+  padding: calc(100% - 98%) calc(100% - 99%);
+  display: flex;
+  align-items: center;
+  list-style: none;
+  justify-content: space-between;
+  cursor: pointer;
+  color: var(--theme-font-color);
+}
+
+.sd-li_file span {
+  flex: 1;
+  text-align: center;
+}
+
+.sd-li_file button {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--theme-font-color);
+}
+
+.sd-li_file button:hover {
+  background-color: var(--theme-hover-transparent);
+}
+
+/* 메모부분 */
 .sd-memo_container {
   width: 100%;
   display: flex;

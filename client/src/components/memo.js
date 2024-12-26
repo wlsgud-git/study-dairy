@@ -2,10 +2,16 @@ import { useStatus } from "../context/status.js";
 import "../css/memo.css";
 import { useState, useEffect } from "react";
 import { MemoContent } from "./memoContent.js";
+import { SdFile } from "../components/file.js";
 
 function Memo() {
-  let { Darkmode, Menu, changeMode, menuFocusing, menuMenu, FiInfo } =
+  let { Darkmode, Menu, changeMode, menuFocusing, menuMenu, FiInfo, FileList } =
     useStatus();
+
+  useEffect(() => {
+    console.log("Asdasd");
+    FileList.list.map((val) => console.log(val));
+  }, [FileList.list]);
 
   return (
     <div
@@ -34,6 +40,12 @@ function Memo() {
         <button className="sd-color_theme_btn" onClick={() => changeMode()}>
           <i className={`fa-solid fa-${Darkmode ? "sun" : "moon"}`}></i>
         </button>
+      </div>
+      {/* 현재 파일 리스트 */}
+      <div className="file_lists">
+        {FileList.list.length
+          ? FileList.list.map((val) => <SdFile data={val} />)
+          : ""}
       </div>
       {/* 메모 content 부분 */}
       <MemoContent />

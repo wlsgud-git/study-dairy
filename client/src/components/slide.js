@@ -110,7 +110,6 @@ function Slide() {
                 <Folder
                   key={val.info.name}
                   data={val.info}
-                  reData={[]}
                   pn={Fol}
                   setpn={setFol}
                 />
@@ -118,7 +117,6 @@ function Slide() {
                 <File
                   key={val.info.name}
                   data={val.info}
-                  reData={[]}
                   pn={Fol}
                   setpn={setFol}
                 />

@@ -4,20 +4,12 @@ import { Rbtree } from "../middleware/dict.js";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 import { File } from "./file.js";
 
-export function Folder({ pn, setpn, data, reData }) {
-  let Target = reData.map((val) => val);
+export function Folder({ pn, setpn, data }) {
   let { currentFol, menuFocusing, DictCrud } = useStatus();
   let [DictData, setDictData] = useState(data);
 
   // 현재 폴더의 자식부분
   let [Fol, setFol] = useState({ node: new Rbtree(), arr: [] });
-
-  // 폴더의 전체이름
-  useEffect(() => {
-    let text = "";
-    Target.map((val) => (text += `/${val.name}`));
-    setDictData((c) => ({ ...c, allName: `${text}/${DictData.name}` }));
-  }, [...Target, DictData.name]);
 
   function mousedownEvent(e) {
     e.stopPropagation();
@@ -46,9 +38,13 @@ export function Folder({ pn, setpn, data, reData }) {
   }, []);
 
   return (
-    <div className="sd-folder" title={DictData.allName}>
+    <div className="sd-folder" title={DictData.full_name.join("/")}>
       {/* main */}
-      <div className="sd-folder_main" onMouseDown={mousedownEvent}>
+      <div
+        className="sd-folder_main"
+        id={`folder${DictData.id}`}
+        onMouseDown={mousedownEvent}
+      >
         <div className="icons_box">
           <span>
             <i
@@ -65,6 +61,7 @@ export function Folder({ pn, setpn, data, reData }) {
           pn={pn}
           setpn={setpn}
           data={DictData}
+          setdata={setDictData}
           input={ModInput}
           setinput={setModInput}
         />
@@ -94,7 +91,6 @@ export function Folder({ pn, setpn, data, reData }) {
                     data={val.info}
                     pn={Fol}
                     setpn={setFol}
-                    reData={[...Target, DictData]}
                   />
                 ) : (
                   <File
@@ -102,7 +98,6 @@ export function Folder({ pn, setpn, data, reData }) {
                     data={val.info}
                     pn={Fol}
                     setpn={setFol}
-                    reData={[...Target, DictData]}
                   />
                 )
               )

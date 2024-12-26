@@ -3,22 +3,6 @@ import { dbPlay } from "../db/db.js";
 class DictData {
   constructor() {}
 
-  // insturucture = [id, full_name, name, folder_id]
-  // get data = [full_name, name, folder_id]
-
-  async searchDict(text) {
-    try {
-      let query = `
-      select full_name, name 
-      from file
-      where name like $1`;
-      let data = [`%${text}%`];
-      return await dbPlay(query, data);
-    } catch (err) {
-      throw err;
-    }
-  }
-
   async getDict(id) {
     try {
       let query = `
@@ -90,6 +74,69 @@ class DictData {
     try {
       let query = `delete from ${dic_type} where id= $1 RETURNING *`;
       const data = [id];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // file
+  async getFileById(id) {
+    try {
+      let query = `select 
+      nidx, full_name, name, title, content , id
+      from file where id=$1 `;
+      const data = [id];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async searchDict(text) {
+    try {
+      let query = `
+      select full_name, name 
+      from file
+      where name like $1`;
+      let data = [`%${text}%`];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // fileList
+  async getFileList() {
+    try {
+      let query = `select * from fileList`;
+      const data = [];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async insertFileList(info) {
+    try {
+      let query = `insert into fileList values($1, $2, $3, $4, $5, $6) returning *`;
+      const data = [
+        info["id"],
+        info["nidx"],
+        info["full_name"],
+        info["name"],
+        info["title"],
+        info["content"],
+      ];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+  async deleteFileList(name, nidx) {
+    try {
+      let query = `delete from fileList where full_name[$1] = $2`;
+      const data = [nidx, name];
       return await dbPlay(query, data);
     } catch (err) {
       throw err;

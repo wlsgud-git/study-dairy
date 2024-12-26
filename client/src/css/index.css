@@ -27,8 +27,11 @@
   /* 폴더 */
   --dict-height: 25px;
   --dict-iconbox-width: 34px;
-  /* 폴더메뉴 */
+  /* 메뉴 */
   --folder-menu-width: 180px;
+
+  /* 파일 리스트 */
+  --file-list-height: 30px;
 }
 
 body {
