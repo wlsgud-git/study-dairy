@@ -9,8 +9,7 @@ function Memo() {
     useStatus();
 
   useEffect(() => {
-    console.log("Asdasd");
-    FileList.list.map((val) => console.log(val));
+    console.log(FileList.list);
   }, [FileList.list]);
 
   return (
@@ -43,9 +42,9 @@ function Memo() {
       </div>
       {/* 현재 파일 리스트 */}
       <div className="file_lists">
-        {FileList.list.length
-          ? FileList.list.map((val) => <SdFile data={val} />)
-          : ""}
+        {FileList.list.map((val) => (
+          <SdFile key={val.full_name} data={val} />
+        ))}
       </div>
       {/* 메모 content 부분 */}
       <MemoContent />

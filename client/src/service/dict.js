@@ -55,6 +55,13 @@ export class DictService {
     });
   }
 
+  async modifyFileList(data) {
+    return this.http.httpFetch("/fileList", {
+      method: "put",
+      body: data,
+    });
+  }
+
   async deleteFileList(name, nidx) {
     return this.http.httpFetch(`/fileList?name=${name}&nidx=${nidx}`, {
       method: "delete",

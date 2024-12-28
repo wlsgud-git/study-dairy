@@ -26,33 +26,30 @@ export const StatusProvider = ({ dictService, children }) => {
   const DictCrud = useCallback(
     async (action, pn, setpn, data) => {
       let res;
-      let newData;
 
       // 백엔드에서 데이터 처리후 값
       switch (action) {
         case "get":
           res = await dictService.getDictDetail(data.id);
-          newData = await res.data;
           break;
         case "post":
           res = await dictService.createDict(data);
-          newData = await res.data;
           break;
         case "put":
           res = await dictService.modifyDict(data);
-          newData = await res.data;
           break;
         default:
           let dd = JSON.parse(data);
           res = await dictService.deleteDict(dd);
-          newData = await res.data;
           break;
       }
+      let newData = await res.data;
 
       if (action == "delete" || action == "put") {
         manageFileList(
           action,
-          action == "put" ? JSON.parse(data.get("modify_data")) : data
+          JSON.parse(action == "put" ? data.get("modify_data") : data),
+          newData
         );
         newData.map((val) => {
           let ar = pn.node.delete(
@@ -81,7 +78,7 @@ export const StatusProvider = ({ dictService, children }) => {
         throw err;
       }
     },
-    [dictService]
+    [dictService, FileList.list]
   );
 
   // 폴더 이벤트
@@ -114,31 +111,47 @@ export const StatusProvider = ({ dictService, children }) => {
   }, []);
 
   const manageFileList = useCallback(
-    async (action, info) => {
-      let tf = true;
-      FileList.list.map((val, index) => {
-        if (action == "insert" && info.id == val.id) {
-          setFileList((c) => ({ ...c, index: index }));
-          tf = false;
-          return;
+    async (action, info, newInfo = undefined) => {
+      let tf = false;
+
+      if (FileList.list.length == 0) tf = true;
+      for (var i = 0; i < FileList.list.length; i++) {
+        let val = FileList.list[i];
+        if (action == "insert") {
+          if (info.id == val.id) {
+            tf = false;
+            setFileList((c) => ({ ...c, index: i }));
+            return;
+          } else tf = true;
         } else if (
           (action == "put" || action == "delete") &&
           val.full_name[info.nidx - 1] == info.name
         ) {
-          return;
+          tf = true;
         }
-        if (action !== "insert" && index == FileList.list.length - 1)
-          tf = false;
-      });
+      }
+
+      // FileList.list.map((val, index) => {
+      //   if (action == "insert") {
+      //     info.id == val.id
+      //       ? setFileList((c) => ({ ...c, index: index }))
+      //       : (tf = true);
+      //   } else if (
+      //     (action == "put" || action == "delete") &&
+      //     val.full_name[info.nidx - 1] == info.name
+      //   ) {
+      //     tf = true;
+      //   }
+      // });
 
       if (!tf) return;
-      handleFileList(action, info);
+      handleFileList(action, info, newInfo);
     },
     [FileList.list]
   );
 
   const handleFileList = useCallback(
-    async (action, info) => {
+    async (action, info, newInfo) => {
       let formData = new FormData();
       if (action == "insert") {
         let data = await dictService.getFile(info.id);
@@ -160,6 +173,32 @@ export const StatusProvider = ({ dictService, children }) => {
           )
           .catch((err) => alert(err));
       } else if (action == "put") {
+        console.log("test");
+        let newName = newInfo[0].name;
+        formData.append("nidx", info.nidx);
+        formData.append("dic_type", info.dic_type);
+        formData.append("old_name", info.name);
+        formData.append("new_name", newName);
+        await dictService
+          .modifyFileList(formData)
+          .then((li) =>
+            setFileList((c) => ({
+              ...c,
+              list: c.list.map((val) =>
+                val.full_name[info.nidx - 1] == info.name
+                  ? {
+                      ...val,
+                      full_name: val.full_name.map((value, index) =>
+                        index == info.nidx - 1 ? newName : value
+                      ),
+                      name:
+                        info.nidx == val.full_name.length ? newName : val.name,
+                    }
+                  : val
+              ),
+            }))
+          )
+          .catch((err) => alert(err));
       } else {
         await dictService
           .deleteFileList(info.name, info.nidx)

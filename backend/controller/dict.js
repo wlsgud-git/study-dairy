@@ -65,13 +65,18 @@ export async function getFile(req, res) {
 // file_list
 export async function getFileList(req, res) {
   const list = await dic.getFileList();
-
   return res.status(200).json({ list });
 }
 
 export async function insertFileList(req, res) {
   const data = await dic.insertFileList(req.body);
   return res.status(200).json({ data });
+}
+
+export async function modifyFileList(req, res) {
+  console.log(req.body);
+  const data = await dic.modifyFileList(req.body);
+  return res.status(201).json({ message: "수정됨" });
 }
 
 export async function deleteFileList(req, res) {

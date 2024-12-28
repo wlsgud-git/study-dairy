@@ -133,6 +133,26 @@ class DictData {
       throw err;
     }
   }
+
+  async modifyFileList(info) {
+    try {
+      let ty = info.dic_type;
+      let d1 = [info.nidx, info.new_name];
+      let d2 = [info.nidx, info.old_name];
+      let query = `update fileList set full_name[$1] = $2${
+        ty == "file" ? ",name=$3" : ""
+      } where full_name[$${ty == "file" ? 4 : 3}] = $${ty == "file" ? 5 : 4}`;
+      if (info.dic_type == "file") d1.push(info.new_name);
+
+      const data = d1.concat(d2);
+      console.log(query, data);
+
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async deleteFileList(name, nidx) {
     try {
       let query = `delete from fileList where full_name[$1] = $2`;

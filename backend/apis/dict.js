@@ -10,6 +10,7 @@ import {
   deleteFileList,
   insertFileList,
   getFileList,
+  modifyFileList,
 } from "../controller/dict.js";
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.post("/dict", createDict);
 router.post("/fileList", insertFileList);
 // put
 router.put("/dict", modifyDict);
+router.put("/fileList", modifyFileList);
 // delete
 router.delete("/dict", deleteDict);
 router.delete("/fileList", deleteFileList);
