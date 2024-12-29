@@ -8,10 +8,6 @@ function Memo() {
   let { Darkmode, Menu, changeMode, menuFocusing, menuMenu, FiInfo, FileList } =
     useStatus();
 
-  useEffect(() => {
-    console.log(FileList.list);
-  }, [FileList.list]);
-
   return (
     <div
       className="sd-main_container"
@@ -42,8 +38,16 @@ function Memo() {
       </div>
       {/* 현재 파일 리스트 */}
       <div className="file_lists">
-        {FileList.list.map((val) => (
-          <SdFile key={val.full_name} data={val} />
+        {FileList.list.map((val, index) => (
+          <SdFile
+            key={
+              val.full_name.map((val) => val.toString()) +
+              val.title +
+              val.content
+            }
+            data={val}
+            index={index}
+          />
         ))}
       </div>
       {/* 메모 content 부분 */}

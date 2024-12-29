@@ -2,11 +2,16 @@ import { useStatus } from "../context/status.js";
 import { useRef, useState, useEffect } from "react";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 
-export function SdFile({ data }) {
-  let { handleFileList } = useStatus();
+export function SdFile({ data, index }) {
+  let { handleFileList, currentIndex } = useStatus();
   let [Data, setData] = useState(data);
+
   return (
-    <li className="sd-file_li" title={Data.full_name.join("/")}>
+    <li
+      className="sd-file_li"
+      onClick={() => currentIndex(index)}
+      title={Data.full_name.join("/")}
+    >
       <span>{Data.name}</span>
       <button onClick={() => handleFileList("delete", Data)}>x</button>
     </li>

@@ -19,31 +19,34 @@ export const StatusProvider = ({ dictService, children }) => {
     dic: false,
   });
   let [FileList, setFileList] = useState({
-    index: -1,
+    index: 0,
     list: [],
   });
 
+  const returnDictInfo = async (action, data) => {
+    let res;
+    switch (action) {
+      case "get":
+        res = await dictService.getDictDetail(data.id);
+        break;
+      case "post":
+        res = await dictService.createDict(data);
+        break;
+      case "put":
+        res = await dictService.modifyDict(data);
+        break;
+      default:
+        let dd = JSON.parse(data);
+        res = await dictService.deleteDict(dd);
+        break;
+    }
+    let newData = await res.data;
+    return { res, newData };
+  };
+
   const DictCrud = useCallback(
     async (action, pn, setpn, data) => {
-      let res;
-
-      // 백엔드에서 데이터 처리후 값
-      switch (action) {
-        case "get":
-          res = await dictService.getDictDetail(data.id);
-          break;
-        case "post":
-          res = await dictService.createDict(data);
-          break;
-        case "put":
-          res = await dictService.modifyDict(data);
-          break;
-        default:
-          let dd = JSON.parse(data);
-          res = await dictService.deleteDict(dd);
-          break;
-      }
-      let newData = await res.data;
+      let { res, newData } = await returnDictInfo(action, data);
 
       if (action == "delete" || action == "put") {
         manageFileList(
@@ -110,6 +113,10 @@ export const StatusProvider = ({ dictService, children }) => {
     list();
   }, []);
 
+  const currentIndex = (index) => {
+    setFileList((c) => ({ ...c, index: index }));
+  };
+
   const manageFileList = useCallback(
     async (action, info, newInfo = undefined) => {
       let tf = false;
@@ -120,7 +127,7 @@ export const StatusProvider = ({ dictService, children }) => {
         if (action == "insert") {
           if (info.id == val.id) {
             tf = false;
-            setFileList((c) => ({ ...c, index: i }));
+            currentIndex(i);
             return;
           } else tf = true;
         } else if (
@@ -173,7 +180,6 @@ export const StatusProvider = ({ dictService, children }) => {
           )
           .catch((err) => alert(err));
       } else if (action == "put") {
-        console.log("test");
         let newName = newInfo[0].name;
         formData.append("nidx", info.nidx);
         formData.append("dic_type", info.dic_type);
@@ -295,8 +301,10 @@ export const StatusProvider = ({ dictService, children }) => {
 
       // file list
       FileList,
+      returnDictInfo,
       manageFileList,
       handleFileList,
+      currentIndex,
     }),
     [Darkmode, Menu, FolInfo, FiInfo, FileList]
   );
