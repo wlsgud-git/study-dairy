@@ -145,7 +145,6 @@ class DictData {
       if (info.dic_type == "file") d1.push(info.new_name);
 
       const data = d1.concat(d2);
-      console.log(query, data);
 
       return await dbPlay(query, data);
     } catch (err) {

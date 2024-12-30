@@ -74,7 +74,6 @@ export async function insertFileList(req, res) {
 }
 
 export async function modifyFileList(req, res) {
-  console.log(req.body);
   const data = await dic.modifyFileList(req.body);
   return res.status(201).json({ message: "수정됨" });
 }

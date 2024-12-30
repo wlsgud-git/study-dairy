@@ -30,8 +30,11 @@
   /* 메뉴 */
   --folder-menu-width: 180px;
 
+  --memo-menu-width: 70px;
+  --memo-menu-height: 300px;
+
   /* 파일 리스트 */
-  --file-list-height: 30px;
+  --file-list-height: 35px;
 }
 
 body {

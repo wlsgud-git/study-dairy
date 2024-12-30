@@ -39,15 +39,7 @@ function Memo() {
       {/* 현재 파일 리스트 */}
       <div className="file_lists">
         {FileList.list.map((val, index) => (
-          <SdFile
-            key={
-              val.full_name.map((val) => val.toString()) +
-              val.title +
-              val.content
-            }
-            data={val}
-            index={index}
-          />
+          <SdFile key={val.full_name} data={val} index={index} />
         ))}
       </div>
       {/* 메모 content 부분 */}

@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 
 export function SdFile({ data, index }) {
-  let { handleFileList, currentIndex } = useStatus();
+  let { handleFileList, currentIndex, FileList } = useStatus();
   let [Data, setData] = useState(data);
 
   return (
@@ -14,6 +14,11 @@ export function SdFile({ data, index }) {
     >
       <span>{Data.name}</span>
       <button onClick={() => handleFileList("delete", Data)}>x</button>
+
+      <div
+        className="current_active"
+        style={{ display: index == FileList.index ? "flex" : "none" }}
+      ></div>
     </li>
   );
 }
