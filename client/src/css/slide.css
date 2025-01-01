@@ -92,7 +92,6 @@
 .sd-f_search_result {
   position: absolute;
   width: 100%;
-  background-color: red;
   border-radius: 5px;
   padding: 4px 0px;
   display: flex;
@@ -101,7 +100,16 @@
   overflow: hidden;
   left: 0;
   z-index: 123124;
-  top: var(--sd-search-height);
+  top: calc(var(--sd-search-height) + 5px);
+}
+
+/* 검색 리스트 */
+.sd-search_li {
+  width: 100%;
+  border: 1px solid black;
+  padding: 8px;
+  background-color: var(--theme-background-color);
+  color: var(--theme-font-color);
 }
 
 /* 폴더추가 */

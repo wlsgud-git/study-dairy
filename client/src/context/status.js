@@ -115,6 +115,7 @@ export const StatusProvider = ({ dictService, children }) => {
 
   const currentIndex = (index) => {
     setFileList((c) => ({ ...c, index: index }));
+    menuFocusing(false);
   };
 
   const manageFileList = useCallback(
@@ -137,19 +138,6 @@ export const StatusProvider = ({ dictService, children }) => {
           tf = true;
         }
       }
-
-      // FileList.list.map((val, index) => {
-      //   if (action == "insert") {
-      //     info.id == val.id
-      //       ? setFileList((c) => ({ ...c, index: index }))
-      //       : (tf = true);
-      //   } else if (
-      //     (action == "put" || action == "delete") &&
-      //     val.full_name[info.nidx - 1] == info.name
-      //   ) {
-      //     tf = true;
-      //   }
-      // });
 
       if (!tf) return;
       handleFileList(action, info, newInfo);

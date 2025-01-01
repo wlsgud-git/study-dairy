@@ -96,6 +96,7 @@
   position: relative;
 }
 
+/* 타이틀 */
 .sd-title {
   width: 100%;
   height: 50px;
@@ -103,38 +104,80 @@
   font-size: 26px;
   outline: none;
   padding: 0px 14px;
-  border: 1px solid red;
   outline: none;
+  border: none;
   background-color: inherit;
 }
 
+/* cotent */
 .sd-memo {
   width: 100%;
   height: calc(100% - 50px);
-  border: 1px solid blue;
   outline: none;
   padding: 8px;
   color: var(--theme-font-color);
 }
 
+/* 이미지 */
+.sd-memo_preview_img {
+  margin: 8px;
+  float: left;
+  border: 1px solid black;
+}
+
+/* menu */
 .sd-memo_menu {
   position: absolute;
   right: 0;
+  top: calc(50% - var(--memo-menu-height) / 2);
   width: var(--memo-menu-width);
   height: var(--memo-menu-height);
-  top: calc(50% - var(--memo-menu-height) / 2);
-  border: 1px solid black;
-  z-index: 12312;
-  overflow: hidden;
+  display: flex;
+}
+
+.sd-menu_content_box {
+  width: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 8px 10px;
+  z-index: 12312;
+  border: 0.1px solid black;
+  overflow: hidden;
+  background-color: var(--theme-dict-menu-background);
   border-radius: 20px 0 0 20px;
 }
 
-.sd-memo_preview_img {
-  width: 100px;
-  height: 100px;
+.sd-menu_content_box button {
+  width: 100%;
+  padding: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  color: var(--theme-font-color);
+  border-radius: 10px;
+  background-color: inherit;
+  margin: 5px 0px;
+}
 
-  border: 1px solid black;
+.sd-menu_content_box button:hover {
+  background-color: var(--theme-hover-transparent);
+}
+
+.sd-menu_show_btn {
+  position: relative;
+  color: var(--theme-font-color);
+  top: calc(50% - 50px);
+  left: 10px;
+  height: 50px;
+  padding: 0px 3px;
+  cursor: pointer;
+  outline: none;
+  line-height: 50%;
+  font-weight: 600;
+  font-size: 15px;
+  z-index: 12313;
+  overflow: hidden;
 }

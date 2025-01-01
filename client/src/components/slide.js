@@ -7,6 +7,14 @@ import { CreateDict } from "./dict.js";
 import { Folder } from "./folder.js";
 import { File } from "./file.js";
 
+function SearchFileLi({ data }) {
+  return (
+    <li className="sd-search_li" title={data.full_name.join("/")}>
+      {data.name}
+    </li>
+  );
+}
+
 function Slide() {
   let { Menu, menuFocusing, DictCrud, currentFol, folderCreate, SearchDict } =
     useStatus();
@@ -31,6 +39,7 @@ function Slide() {
       if (SearchVal === "") return;
       try {
         let data = await SearchDict(SearchVal);
+
         setSearchResult(data.map((val) => val));
       } catch (err) {
         alert(err);
@@ -57,6 +66,7 @@ function Slide() {
                 className="sd-f_search_input"
                 placeholder="폴더 / 파일 검색"
                 value={SearchVal}
+                // onBlur={}
                 onChange={(e) => setSearchVal(e.target.value)}
               />
             </div>
@@ -69,7 +79,7 @@ function Slide() {
           {/* 파일 검색 결과 */}
           <ul className="sd-f_search_result">
             {SearchResult.length
-              ? SearchResult.map((val) => <span>{val.name}</span>)
+              ? SearchResult.map((val) => <SearchFileLi data={val} />)
               : "관련 사전이 없습니다"}
           </ul>
         </div>

@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { CreateDict, DictForm, DictMenu } from "./dict.js";
 
 export function SdFile({ data, index }) {
-  let { handleFileList, currentIndex, FileList } = useStatus();
+  let { handleFileList, currentIndex, FileList, menuFocusing } = useStatus();
   let [Data, setData] = useState(data);
 
   return (
