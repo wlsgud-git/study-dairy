@@ -3,21 +3,19 @@ export class DictService {
     this.http = http;
   }
 
-  async getDictDetail(id) {
+  async getLists(id) {
     return this.http.httpFetch(`/dict?id=${id}`, {
       method: "get",
     });
   }
-
-  async createDict(data) {
+  async insertDict(data) {
     return this.http.httpFetch(`/dict`, {
       method: "post",
       body: data,
     });
   }
-
-  async modifyDict(data) {
-    return this.http.httpFetch("/dict", {
+  async updateDict(data) {
+    return this.http.httpFetch(`/dict`, {
       method: "put",
       body: data,
     });
@@ -32,39 +30,7 @@ export class DictService {
     );
   }
 
-  // file
-  async searchDict(text) {
-    return this.http.httpFetch(`/dict/search?s=${text}`, {
-      method: "get",
-    });
-  }
-
-  async getFile(id) {
-    return this.http.httpFetch(`/file?id=${id}`, { method: "get" });
-  }
-
-  // fileList
-  async getFileList() {
-    return this.http.httpFetch(`/fileList`, { method: "get" });
-  }
-
-  async insertFileList(data) {
-    return this.http.httpFetch(`/fileList`, {
-      method: "post",
-      body: data,
-    });
-  }
-
-  async modifyFileList(data) {
-    return this.http.httpFetch("/fileList", {
-      method: "put",
-      body: data,
-    });
-  }
-
-  async deleteFileList(name, nidx) {
-    return this.http.httpFetch(`/fileList?name=${name}&nidx=${nidx}`, {
-      method: "delete",
-    });
+  async search(text) {
+    return this.http.httpFetch(`/search?q=${text}`, { method: "get" });
   }
 }

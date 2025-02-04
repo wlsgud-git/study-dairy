@@ -1,17 +1,20 @@
 // import logo from './logo.svg';
 import "./css/App.css";
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Slide from "./components/slide.js";
-import Memo from "./components/memo.js";
+import { Home } from "./components/home.js";
+import { NotFound } from "./components/notfound.js";
 
 function App() {
   return (
     <div className="App">
-      <div className="sd-all_container">
-        <Slide />
-        <Memo />
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

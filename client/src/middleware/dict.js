@@ -312,7 +312,7 @@ export class Rbtree {
     this.check[data] = true;
     return this.lists();
   }
-  modify() {}
+
   delete(info) {
     let data = `${info.dic_type == "file" ? "b" : "a"}${info.name}`;
     this.length -= 1;

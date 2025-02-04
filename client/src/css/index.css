@@ -6,35 +6,31 @@
 
 :root {
   /* color */
-  --sd-white: #fff;
-  --sd-black: #000;
-  --sd-gray: rgba(181, 177, 177, 0.959);
+  --black-transparency: rgba(0, 0, 0, 0.4);
 
-  /* 옆 슬라이드 */
-  --sd-side-width: 213px;
-  --sd-side-top-height: 21%;
+  /* menu */
+  --menu-width: 240px;
 
-  /* 폴더 검색 */
-  --sd-search-width: 85%;
-  --sd-search-height: 37px;
-  --sd-search-input-padding: 0px 12px;
-  --sd-searchBtn-width: 40px;
+  /* search */
+  --search-box-height: 100px;
 
-  /* 메인 슬라이드 */
-  --sd-main-top-height: 36px;
-  --sd-current-memo-height: 30px;
+  --search-input-height: 30px;
 
-  /* 폴더 */
-  --dict-height: 25px;
-  --dict-iconbox-width: 34px;
-  /* 메뉴 */
-  --folder-menu-width: 180px;
+  /* dictAdd */
+  --dictadd-btn-height: 40px;
 
-  --memo-menu-width: 90px;
-  --memo-menu-height: 300px;
+  /* home header */
+  --home-header-height: 30px;
 
-  /* 파일 리스트 */
-  --file-list-height: 35px;
+  /* dictionary */
+  --dictionary-height: 24px;
+  --dictionary-menu-width: 120px;
+
+  /* fileList */
+  --filelist-height: 30px;
+
+  /* memo */
+  --memo-title-height: 80px;
 }
 
 body {
@@ -53,6 +49,7 @@ body[data-theme="light"] {
   --theme-hover-transparent: rgba(0, 0, 0, 0.1);
   --theme-opacity: rgba(0, 0, 0, 0.04);
   --theme-dict-menu-background: #fff;
+  --theme-scroll-background: #beb5b5e7;
 }
 body[data-theme="dark"] {
   --theme-background-color: #212121;
@@ -61,9 +58,30 @@ body[data-theme="dark"] {
   --theme-hover-transparent: rgba(255, 255, 255, 0.3);
   --theme-opacity: rgba(255, 255, 255, 0.3);
   --theme-dict-menu-background: #302f2f;
+  --theme-scroll-background: #f7f4f4e7;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.home {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  border: 1px solid black;
+}
+
+.notfound-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.active {
+  display: flex;
 }

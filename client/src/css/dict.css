@@ -1,98 +1,116 @@
 @import url("index.css");
 
-.sd-folder,
-.sd-file,
-.sd-create_dict_box {
+.dictionary {
   width: 100%;
   /* border: 1px solid black; */
-  position: relative;
-  flex-direction: column;
-}
-
-.sd-folder_main,
-.sd-file_main,
-.sd-create_main {
-  width: 100%;
-  height: var(--dict-height);
   display: flex;
-  justify-content: space-between;
+  list-style: none;
+  flex-direction: column;
+  align-items: flex-end;
+  position: relative;
 }
 
-.sd-folder_main:hover,
-.sd-file_main:hover {
+/* main */
+.dictionary_main {
+  width: 100%;
+  height: var(--dictionary-height);
+  /* border: 1px solid black; */
+  display: flex;
+  align-items: center;
+}
+
+.dictionary_main:hover {
   background-color: var(--theme-hover-transparent);
 }
 
-.icons_box {
-  width: var(--dict-iconbox-width);
+.dictionary_main span {
+  margin: 0px 3px;
+  color: var(--theme-font-color);
+  min-width: 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dictionary_content {
+  flex: 1;
+  height: 100%;
+}
+
+.dictionary_content form,
+.dictionary_content form input {
+  width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  font-size: 14px;
-  justify-content: space-around;
-  -ms-flex-item-align: end;
+}
+
+.dictionary_content form input {
+  padding: 0px 7px;
+  border: none;
+  outline: none;
+  background-color: inherit;
+  color: var(--theme-font-color);
+}
+
+/* childlist */
+.childs_list {
+  width: 97%;
+  display: flex;
+  flex-direction: column;
+  /* height: 40px; */
+}
+
+/* createbox */
+.create_box {
+  width: 100%;
+  display: none;
+  border: 1px solid red;
+  height: var(--dictionary-height);
+}
+
+.create_box span {
+  margin: 0px 6px;
+  color: var(--theme-font-color);
+}
+
+.create_form,
+.create_form input {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.create_form input {
+  padding: 0px 5px;
+  border: none;
+  outline: none;
+  background-color: inherit;
   color: var(--theme-font-color);
 }
 
 /* menu */
-.sd-dict_menu {
-  width: var(--folder-menu-width);
-  z-index: 12315;
-  background-color: var(--theme-dict-menu-background);
-  flex-direction: column;
+.dict_menu {
   position: absolute;
-  /* padding-top: 5px; */
-  border-radius: 8px;
-  top: -30px;
-  right: -70%;
-  outline: none;
+  right: -14px;
   overflow: hidden;
+  z-index: 1231241;
+  bottom: 0;
+  flex-direction: column;
+  border: none;
+  background-color: var(--theme-background-color);
+  width: var(--dictionary-menu-width);
   box-shadow: 0.4px 0.4px 0.4px 0.4px black;
 }
 
-.sd-dict_menu button {
-  background-color: var(--theme-dict-menu-background);
-  outline: none;
-  border: none;
+.dict_menu button {
+  font-weight: 600;
   cursor: pointer;
-  padding: 5px 0px;
-  color: var(--theme-font-color);
-}
-
-.sd-dict_menu button:hover {
-  background-color: var(--theme-hover-transparent);
-}
-
-/* lists */
-.sd-folder_lists {
-  width: 95%;
-  display: flex;
-  flex-direction: column;
-  float: right;
-}
-
-.folder_childs {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* form */
-.sd-dict_from {
-  width: calc(100% - var(--dict-iconbox-width));
-  height: 100%;
-}
-
-.sd-post_input,
-.sd-put_input {
-  width: 100%;
-  height: 100%;
+  background-color: inherit;
   border: none;
   outline: none;
-  display: flex;
-  align-items: center;
-  color: var(--theme-font-color);
-  padding: 1px 4px;
-  background-color: inherit;
-  cursor: default;
+  padding: 2px 0px;
+}
+
+.dict_menu button:hover {
+  background-color: var(--theme-hover-transparent);
 }

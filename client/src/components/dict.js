@@ -1,148 +1,256 @@
+import React, { useState, useEffect, useReducer, useRef, memo } from "react";
+
+import { Rbtree } from "../middleware/dict.js";
+import { Form } from "../middleware/form.js";
+
 import "../css/dict.css";
+import { useStatus } from "../context/status";
 
-import { useStatus } from "../context/status.js";
-import { useRef, useState, useEffect } from "react";
+let form = new Form();
 
-export function DictForm({ method, data, pn, setpn, input, setinput }) {
-  let { FolInfo, FiInfo, folderCreate, DictCrud } = useStatus();
+// 파일/폴더 생성박스
+export const CreateBox = ({ data, pn, setpn }) => {
+  let { dictControl, createBoxControl, FolInfo } = useStatus();
+  let [Input, setInput] = useState("");
+  let inputRef = useRef(null);
 
-  let forming = useRef(null);
-  let [InputVal, setInputVal] = useState(method == "put" ? data.name : "");
-
-  useEffect(() => {
-    if (input) forming.current.focus();
-  }, [input]);
-
-  async function submitDict(e) {
-    let formData = new FormData();
-    if (method == "post") {
-      folderCreate();
-      if (InputVal == "") return;
-      let fullname = data.full_name.map((val) => val);
-      fullname.push(InputVal);
-
-      fullname.forEach((val) => formData.append("full_name[]", val));
-      formData.append("nidx", data.nidx + 1);
-      formData.append("name", InputVal);
-      formData.append("folder_id", data.id);
-      formData.append("dic_type", FolInfo.dic ? "folder" : "file");
-    } else {
-      if (!input) return;
-      setinput(false);
-      if (InputVal == "" || InputVal == data.full_name) {
-        setInputVal(data.full_name);
-        return;
-      }
-      data.full_name[data.nidx - 1] = InputVal;
-      let fullname = data.full_name.map((val) => val);
-
-      fullname.forEach((val) => formData.append("full_name[]", val));
-      formData.append("name", InputVal);
-      formData.append("id", data.id);
-      formData.append("dic_type", data.dic_type);
-      formData.append("modify_data", JSON.stringify(data));
+  function submitEvent(e) {
+    if (!form.inputValidate("post", pn, Input)) {
+      setInput("");
+      createBoxControl(0, { id: data.id });
+      return;
     }
-    try {
-      await DictCrud(method, pn, setpn, formData);
-      setInputVal(method == "post" ? "" : InputVal);
-    } catch (err) {
-      alert(err.message);
-    }
+
+    let info = {
+      fullname: [...data.fullname, Input],
+      name: Input,
+      folder_id: data.id,
+      parent_fullname: data.fullname,
+      dic_type: "folder",
+    };
+
+    dictControl("post", form.forming(info), pn, setpn);
   }
 
   return (
-    <form
-      action={method}
-      className="sd-dict_from"
-      onSubmit={(e) => {
-        e.preventDefault();
-        forming.current.blur();
-      }}
-    >
-      <input
-        className={`sd-${method == "put" ? "put" : "post"}_input`}
-        type="text"
-        spellCheck="false"
-        value={InputVal}
-        ref={forming}
-        id={`${data.dic_type}_${method}${data.id}`}
-        onChange={(e) => setInputVal(e.target.value)}
-        onBlur={submitDict}
-        readOnly={method == "put" ? !input : false}
-      ></input>
-    </form>
-  );
-}
-
-export function CreateDict({ data, pn, setpn }) {
-  let { FolInfo } = useStatus();
-
-  return (
-    <div
-      className="sd-create_dict_box"
-      style={{
-        display: FolInfo.id == data.id && FolInfo.create ? "flex" : "none",
-      }}
-    >
-      <div className="sd-create_main">
-        <div className="icons_box">
-          <span>
-            <i className={`fa-solid fa-${FolInfo.dic ? "folder" : "file"}`}></i>
-          </span>
-        </div>
-        <DictForm method="post" data={data} pn={pn} setpn={setpn} />
-      </div>
+    <div id={`folder${data.id}`} className="create_box">
+      <span></span>
+      <form
+        className="create_form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          inputRef.current.blur();
+        }}
+      >
+        <input
+          val={Input}
+          ref={inputRef}
+          onChange={(e) => setInput(e.target.value)}
+          spellCheck={false}
+          onBlur={submitEvent}
+        />
+      </form>
     </div>
   );
-}
+};
 
-export function DictMenu({ open, setopen, data, pn, setpn, input, setinput }) {
-  let { folderCreate, DictCrud, currentFol, currentFi } = useStatus();
-  // 메뉴에 이벤트 발생시
-  let menu = useRef(null);
-  async function menuEvent(e) {
+// 파일/폴더 박스
+export const Dictionary = React.memo(({ data, pn, setpn }) => {
+  // console.log(`render ${data.name}`);
+  let { dictControl, changeFolId, createBoxControl } = useStatus();
+
+  let MenuRef = useRef(null);
+  // 수정인풋 활성화 상태와 값
+  let InputRef = useRef(null);
+  let [Input, setInput] = useState({
+    state: false,
+    value: data.name,
+  });
+  // 메뉴 활성화
+  let [Menu, setMenu] = useState(false);
+
+  // 자식 사전 관련
+  let [Child, setChild] = useState({ node: new Rbtree(), arr: [] });
+  // 자식 사전 display여부
+  let [IsOpen, setIsOpen] = useState(false);
+
+  //폴더일 경우 자식 사전 가져오기
+  useEffect(() => {
+    if (data.dic_type == "file") return;
+
+    let datas = async () => {
+      await dictControl("get", data, Child, setChild);
+    };
+    datas();
+  }, []);
+
+  // 메뉴창 오픈시 처음 포커싱
+  useEffect(() => {
+    if (Menu) MenuRef.current.focus();
+  }, [Menu]);
+
+  // 수정창 활성화 후 포커싱
+  useEffect(() => {
+    if (Input.state) InputRef.current.focus();
+  }, [Input.state]);
+
+  // 이름 변경후 자식사전들 full_name변경
+  useEffect(() => {
+    if (!Child.arr.length) return;
+
+    setChild((c) => ({
+      ...c,
+      arr: c.arr.map((val) => ({
+        ...val,
+        info: {
+          ...val.info,
+          fullname: [...data.fullname, val.info.name],
+        },
+      })),
+    }));
+  }, [data.fullname]);
+
+  // 사전 클릭시
+  function mouseDownEvent(e) {
     e.stopPropagation();
 
-    let event = e.target.innerText;
+    if (data.dic_type == "folder") changeFolId(data.id);
 
-    if (event == "파일생성" || event == "폴더생성") {
-      e.preventDefault();
-      folderCreate(event == "파일생성" ? false : true);
-    } else if (event == "이름변경") {
-      e.preventDefault();
-      setinput(true);
+    if (e.buttons == 1) {
+      if (data.dic_type == "folder") {
+        setIsOpen(!IsOpen);
+      }
     } else {
-      DictCrud("delete", pn, setpn, JSON.stringify(data));
-      data.dic_type == "folder" ? currentFol(0) : currentFi(0);
+      e.preventDefault();
+      setMenu(!Menu);
     }
   }
 
-  useEffect(() => {
-    if (open) menu.current.focus();
-  }, [open]);
+  // 사전 이름 변경시
+  function submitEvent(e) {
+    if (!Input.state) return;
+    if (Input.value == data.name) return;
+    data.fullname[data.fullname.length - 1] = Input.value;
+
+    let info = {
+      id: data.id,
+      fullname: [...data.fullname],
+      name: Input.value,
+      dic_type: data.dic_type,
+      old_name: data.name,
+    };
+
+    dictControl("put", form.forming(info), pn, setpn);
+  }
+
+  // 메뉴 버튼 클릭시
+  function MenuEvent(e) {
+    let event = e.target.innerText;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    switch (event) {
+      case "파일생성":
+        createBoxControl(1, { type: false });
+        setIsOpen(!IsOpen);
+        break;
+      case "폴더생성":
+        createBoxControl(1, { type: true });
+        setIsOpen(!IsOpen);
+        break;
+      case "이름변경":
+        setInput((c) => ({ ...c, state: true }));
+        break;
+      default:
+        dictControl("delete", data, pn, setpn);
+        break;
+    }
+  }
 
   return (
-    <div
-      className="sd-dict_menu"
-      style={{ display: open ? "flex" : "none" }}
-      tabIndex="0"
-      ref={menu}
-      onBlur={() => setopen(false)}
-    >
-      <button
-        style={{ display: data.dic_type == "folder" ? "block" : "none" }}
-        onMouseDown={menuEvent}
+    <li className="dictionary">
+      {/* dictionary main */}
+      <div
+        className="dictionary_main"
+        title={data.fullname.join("/")}
+        onMouseDown={mouseDownEvent}
       >
-        파일생성
-      </button>
-      <button
-        onMouseDown={menuEvent}
-        style={{ display: data.dic_type == "folder" ? "block" : "none" }}
+        {data.dic_type == "folder" ? (
+          <span>
+            <i
+              className={`fa-solid fa-chevron-${IsOpen ? "down" : "right"}`}
+            ></i>
+          </span>
+        ) : (
+          ""
+        )}
+        <div className="dictionary_content">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              InputRef.current.blur();
+            }}
+          >
+            <input
+              type="text"
+              ref={InputRef}
+              style={{ cursor: !Input.state ? "default" : "" }}
+              value={Input.value}
+              onChange={(e) =>
+                setInput((c) => ({ ...c, value: e.target.value }))
+              }
+              onBlur={submitEvent}
+              spellCheck={false}
+              readOnly={!Input.state}
+            />
+          </form>
+        </div>
+      </div>
+
+      {/* dictionary menu */}
+      <div
+        className="dict_menu"
+        tabIndex="0"
+        ref={MenuRef}
+        style={{ display: Menu ? "flex" : "none" }}
+        onBlur={() => setMenu(!Menu)}
       >
-        폴더생성
-      </button>
-      <button onMouseDown={menuEvent}>이름변경</button>
-      <button onMouseDown={menuEvent}>삭제</button>
-    </div>
+        {data.dic_type == "folder" ? (
+          <button onMouseDown={MenuEvent}>파일생성</button>
+        ) : (
+          ""
+        )}
+        {data.dic_type == "folder" ? (
+          <button onMouseDown={MenuEvent}>폴더생성</button>
+        ) : (
+          ""
+        )}
+        <button onMouseDown={MenuEvent}>이름변경</button>
+        <button onMouseDown={MenuEvent}>삭제</button>
+      </div>
+
+      {/* dictionary child */}
+      {data.dic_type == "folder" ? (
+        <div
+          className="childs_list"
+          style={{ display: IsOpen ? "flex" : "none" }}
+        >
+          <CreateBox data={data} pn={Child} setpn={setChild} />
+          {Child.arr.length
+            ? Child.arr.map((val) => (
+                <Dictionary
+                  key={`${val.info.dic_type}${val.info.id}`}
+                  data={val.info}
+                  pn={Child}
+                  setpn={setChild}
+                />
+              ))
+            : ""}
+        </div>
+      ) : (
+        ""
+      )}
+    </li>
   );
-}
+});

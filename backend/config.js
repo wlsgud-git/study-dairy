@@ -3,7 +3,6 @@ dotenv.config();
 
 function requires(key) {
   let info = process.env[key] || undefined;
-  // if (!info) throw new Error(`${key} don't have`);
   return info;
 }
 
