@@ -16,21 +16,10 @@ export const StatusProvider = ({ dictService, children }) => {
   // 폴더 관련
   let FolId = useRef(0);
   const changeFolId = (id) => (FolId.current = id);
-  const createBoxControl = (action, payload) => {
-    let node = document.getElementById(
-      `folder${payload.id !== undefined ? payload.id : FolId.current}`
-    );
-    let nodeInput = node.querySelector("input");
-    if (!action) node.style.display = "none";
-    else {
-      node.style.display = "flex";
-      nodeInput.focus();
 
-      node.querySelector("span").innerHTML = `<i class="fa-solid fa-${
-        payload.type ? "folder" : "file"
-      }"></i>`;
-    }
-  };
+  //파일 관련
+  let FiId = useRef(0);
+  const changeFiId = (id) => (FiId.current = id);
 
   // 사전 crud
   const dictControl = useCallback(
@@ -96,7 +85,10 @@ export const StatusProvider = ({ dictService, children }) => {
       // folder
       FolId,
       changeFolId,
-      createBoxControl,
+
+      // file
+      FiId,
+      changeFiId,
 
       // search
       searchFile,

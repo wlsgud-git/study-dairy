@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer, useRef, memo } from "react";
 
 import { Rbtree } from "../middleware/dict.js";
 import { Form } from "../middleware/form.js";
+import { emitter } from "../middleware/eventBus.js";
 
 import "../css/dict.css";
 import { useStatus } from "../context/status";
@@ -10,31 +11,59 @@ let form = new Form();
 
 // 파일/폴더 생성박스
 export const CreateBox = ({ data, pn, setpn }) => {
-  let { dictControl, createBoxControl, FolInfo } = useStatus();
-  let [Input, setInput] = useState("");
+  let { dictControl } = useStatus();
+  let [Input, setInput] = useState({
+    value: "",
+    state: false,
+    dic_type: false,
+  });
   let inputRef = useRef(null);
 
+  // 사전 생성 함수
   function submitEvent(e) {
-    if (!form.inputValidate("post", pn, Input)) {
-      setInput("");
-      createBoxControl(0, { id: data.id });
+    if (!form.inputValidate("post", pn, Input.value)) {
+      setInput((c) => ({ ...c, state: false, value: "" }));
       return;
     }
 
     let info = {
-      fullname: [...data.fullname, Input],
-      name: Input,
+      fullname: [...data.fullname, Input.value],
+      name: Input.value,
       folder_id: data.id,
       parent_fullname: data.fullname,
-      dic_type: "folder",
+      dic_type: Input.dic_type ? "folder" : "file",
     };
 
-    dictControl("post", form.forming(info), pn, setpn);
+    try {
+      dictControl("post", form.forming(info), pn, setpn);
+      setInput((c) => ({ ...c, state: false, value: "" }));
+    } catch (err) {}
   }
 
+  // 폴더 및 파일 생성 클릭시 자식 사전이 open상태가 됨
+  useEffect(() => {
+    const handler = (dic_type) =>
+      setInput((c) => ({ ...c, state: true, dic_type }));
+    emitter.on(`create${data.id}`, handler);
+    return () => emitter.off(`create${data.id}`, handler);
+  }, []);
+
+  useEffect(() => {
+    if (Input.state) {
+      emitter.emit(`child${data.id}`, true);
+      inputRef.current.focus();
+    }
+  }, [Input.state]);
+
   return (
-    <div id={`folder${data.id}`} className="create_box">
-      <span></span>
+    <div
+      id={`folder${data.id}`}
+      className="create_box"
+      style={{ display: Input.state ? "flex" : "none" }}
+    >
+      <span>
+        <i class={`fa-solid fa-${Input.dic_type ? "folder" : "file"}`}></i>
+      </span>
       <form
         className="create_form"
         onSubmit={(e) => {
@@ -43,9 +72,9 @@ export const CreateBox = ({ data, pn, setpn }) => {
         }}
       >
         <input
-          val={Input}
+          val={Input.value}
           ref={inputRef}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setInput((c) => ({ ...c, value: e.target.value }))}
           spellCheck={false}
           onBlur={submitEvent}
         />
@@ -56,24 +85,26 @@ export const CreateBox = ({ data, pn, setpn }) => {
 
 // 파일/폴더 박스
 export const Dictionary = React.memo(({ data, pn, setpn }) => {
-  // console.log(`render ${data.name}`);
-  let { dictControl, changeFolId, createBoxControl } = useStatus();
+  let { dictControl, changeFolId, changeFiId, createBoxControl } = useStatus();
 
-  let MenuRef = useRef(null);
-  // 수정인풋 활성화 상태와 값
-  let InputRef = useRef(null);
-  let [Input, setInput] = useState({
-    state: false,
-    value: data.name,
-  });
-  // 메뉴 활성화
-  let [Menu, setMenu] = useState(false);
+  // 현재 내 사전 ------------------------------------------------------------------------------
+  // 사전 클릭시
+  function mouseDownEvent(e) {
+    e.stopPropagation();
 
-  // 자식 사전 관련
-  let [Child, setChild] = useState({ node: new Rbtree(), arr: [] });
-  // 자식 사전 display여부
-  let [IsOpen, setIsOpen] = useState(false);
+    data.dic_type == "folder" ? changeFolId(data.id) : changeFiId(data.id);
 
+    if (e.buttons == 1) {
+      setIsOpen(!IsOpen);
+    } else {
+      e.preventDefault();
+      setMenu(!Menu);
+    }
+  }
+
+  // 자식 사전 ------------------------------------------------------------------------------
+  let [Child, setChild] = useState({ node: new Rbtree(), arr: [] }); // 자식 사전 관련
+  let [IsOpen, setIsOpen] = useState(false); // 자식 사전 display여부
   //폴더일 경우 자식 사전 가져오기
   useEffect(() => {
     if (data.dic_type == "file") return;
@@ -84,16 +115,23 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
     datas();
   }, []);
 
-  // 메뉴창 오픈시 처음 포커싱
+  // 자식 사전 강제로 보이게
   useEffect(() => {
-    if (Menu) MenuRef.current.focus();
-  }, [Menu]);
+    const handler = (newState) => setIsOpen(newState);
+    emitter.on(`child${data.id}`, handler);
+    return () => emitter.off(`child${data.id}`, handler);
+  }, []);
 
+  // 사전 이름수정 ------------------------------------------------------------------------------
+  let InputRef = useRef(null);
+  let [Input, setInput] = useState({
+    state: false,
+    value: data.name,
+  });
   // 수정창 활성화 후 포커싱
   useEffect(() => {
     if (Input.state) InputRef.current.focus();
   }, [Input.state]);
-
   // 이름 변경후 자식사전들 full_name변경
   useEffect(() => {
     if (!Child.arr.length) return;
@@ -110,26 +148,17 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
     }));
   }, [data.fullname]);
 
-  // 사전 클릭시
-  function mouseDownEvent(e) {
-    e.stopPropagation();
-
-    if (data.dic_type == "folder") changeFolId(data.id);
-
-    if (e.buttons == 1) {
-      if (data.dic_type == "folder") {
-        setIsOpen(!IsOpen);
-      }
-    } else {
-      e.preventDefault();
-      setMenu(!Menu);
+  // 이름 수정 함수
+  async function submitEvent(e) {
+    if (
+      !form.inputValidate("put", pn, {
+        new_name: Input.value,
+        old_name: data.name,
+      })
+    ) {
+      setInput((c) => ({ ...c, state: false, value: data.name }));
+      return;
     }
-  }
-
-  // 사전 이름 변경시
-  function submitEvent(e) {
-    if (!Input.state) return;
-    if (Input.value == data.name) return;
     data.fullname[data.fullname.length - 1] = Input.value;
 
     let info = {
@@ -140,9 +169,21 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
       old_name: data.name,
     };
 
-    dictControl("put", form.forming(info), pn, setpn);
+    try {
+      dictControl("put", form.forming(info), pn, setpn);
+      setInput((c) => ({ ...c, state: false }));
+    } catch (err) {
+      alert(err);
+    }
   }
 
+  // 사전 메뉴 ------------------------------------------------------------------------------
+  let [Menu, setMenu] = useState(false); // 메뉴 활성화
+  let MenuRef = useRef(null);
+  // 메뉴창 오픈시 처음 포커싱
+  useEffect(() => {
+    if (Menu) MenuRef.current.focus();
+  }, [Menu]);
   // 메뉴 버튼 클릭시
   function MenuEvent(e) {
     let event = e.target.innerText;
@@ -150,22 +191,10 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    switch (event) {
-      case "파일생성":
-        createBoxControl(1, { type: false });
-        setIsOpen(!IsOpen);
-        break;
-      case "폴더생성":
-        createBoxControl(1, { type: true });
-        setIsOpen(!IsOpen);
-        break;
-      case "이름변경":
-        setInput((c) => ({ ...c, state: true }));
-        break;
-      default:
-        dictControl("delete", data, pn, setpn);
-        break;
-    }
+    if (event == "파일생성" || event == "폴더생성")
+      emitter.emit(`create${data.id}`, event == "파일생성" ? false : true);
+    else if (event == "이름변경") setInput((c) => ({ ...c, state: true }));
+    else dictControl("delete", data, pn, setpn);
   }
 
   return (
@@ -230,27 +259,29 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
         <button onMouseDown={MenuEvent}>삭제</button>
       </div>
 
-      {/* dictionary child */}
-      {data.dic_type == "folder" ? (
-        <div
-          className="childs_list"
-          style={{ display: IsOpen ? "flex" : "none" }}
-        >
-          <CreateBox data={data} pn={Child} setpn={setChild} />
-          {Child.arr.length
-            ? Child.arr.map((val) => (
-                <Dictionary
-                  key={`${val.info.dic_type}${val.info.id}`}
-                  data={val.info}
-                  pn={Child}
-                  setpn={setChild}
-                />
-              ))
-            : ""}
-        </div>
-      ) : (
-        ""
-      )}
+      <div className="child_box">
+        <CreateBox data={data} pn={Child} setpn={setChild} />
+        {/* dictionary child */}
+        {data.dic_type == "folder" ? (
+          <div
+            className="childs_list"
+            style={{ display: IsOpen ? "flex" : "none" }}
+          >
+            {Child.arr.length
+              ? Child.arr.map((val) => (
+                  <Dictionary
+                    key={`${val.info.dic_type}${val.info.id}`}
+                    data={val.info}
+                    pn={Child}
+                    setpn={setChild}
+                  />
+                ))
+              : ""}
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
     </li>
   );
 });
