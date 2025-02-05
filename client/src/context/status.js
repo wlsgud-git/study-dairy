@@ -66,6 +66,27 @@ export const StatusProvider = ({ dictService, children }) => {
     [dictService]
   );
 
+  // 파일리스트 crud
+  const FileListControl = useCallback(
+    async (action, data = undefined) => {
+      let res;
+      let data;
+      // 서버 데이터 처리
+      switch (action) {
+        case "get":
+          res = await dictService.getFileList();
+          data = await res.data;
+          break;
+        default:
+          res = await dictService.getFileList(data);
+          data = await res.data;
+          break;
+      }
+      return data;
+    },
+    [dictService]
+  );
+
   // 파일 검색
   const searchFile = useCallback(
     async (text) => {
@@ -89,6 +110,9 @@ export const StatusProvider = ({ dictService, children }) => {
       // file
       FiId,
       changeFiId,
+
+      // fileList
+      FileListControl,
 
       // search
       searchFile,

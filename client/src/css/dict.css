@@ -103,7 +103,7 @@
   border: none;
   background-color: var(--theme-background-color);
   width: var(--dictionary-menu-width);
-  box-shadow: 0.4px 0.4px 0.4px 0.4px black;
+  box-shadow: 0.4px 0.4px 0.4px 0.4px var(--theme-font-color);
 }
 
 .dict_menu button {
@@ -113,6 +113,7 @@
   border: none;
   outline: none;
   padding: 2px 0px;
+  color: var(--theme-font-color);
 }
 
 .dict_menu button:hover {

@@ -34,7 +34,7 @@ class DictData {
         info["fullname"],
         info["name"],
         info["dic_type"],
-        info["parent_fullname"],
+        !info["parent_fullname"].length ? [] : info["parent_fullname"],
         info["folder_id"],
       ];
       return await dbPlay(query, data);

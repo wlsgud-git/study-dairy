@@ -9,7 +9,7 @@ export class Form {
       if (typeof val == "object")
         val.length
           ? val.forEach((val) => formData.append(`${key}[]`, val))
-          : formData.append(`${key}[]`, []);
+          : formData.append(`${key}`, "");
       else formData.append(key, val);
     }
     return formData;

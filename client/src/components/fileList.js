@@ -1,15 +1,19 @@
 // css
-import { useEffect } from "react";
 import "../css/home.css";
 
 // middleware
-// import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-// 현재 다루는 파일들
+import { getList } from "../redux/reducer/fileListSlice.js";
+
 export const FileList = () => {
-  // let dispatch = useDispatch();
+  const { fileList } = useSelector((state) => state.fileList);
+  let dispatch = useDispatch();
 
-  // useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    dispatch(getList());
+  }, [dispatch]);
 
   return <ul className="file_list"></ul>;
 };

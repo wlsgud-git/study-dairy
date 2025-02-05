@@ -48,6 +48,7 @@ export const CreateBox = ({ data, pn, setpn }) => {
     return () => emitter.off(`create${data.id}`, handler);
   }, []);
 
+  // 인풋 상태가 활성화되면 focusing을 줌
   useEffect(() => {
     if (Input.state) {
       emitter.emit(`child${data.id}`, true);
@@ -72,7 +73,7 @@ export const CreateBox = ({ data, pn, setpn }) => {
         }}
       >
         <input
-          val={Input.value}
+          value={Input.value}
           ref={inputRef}
           onChange={(e) => setInput((c) => ({ ...c, value: e.target.value }))}
           spellCheck={false}
