@@ -13,6 +13,7 @@ import { changeId } from "../redux/reducer/dictSlice.js";
 import {
   addFileList,
   deleteFileList,
+  getFileList,
   modifyList,
 } from "../redux/action/fileListAction.js";
 // context;
@@ -220,8 +221,8 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
       emitter.emit(`create${data.id}`, event == "파일생성" ? false : true);
     else if (event == "이름변경") setInput((c) => ({ ...c, state: true }));
     else
-      dictControl("delete", data, pn, setpn).then((as) =>
-        dispatch(deleteFileList(data.id, data.fullname))
+      dictControl("delete", data, pn, setpn).then(() =>
+        dispatch(getFileList())
       );
   }
 
