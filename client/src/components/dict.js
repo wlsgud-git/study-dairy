@@ -156,7 +156,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
   }, [Input.state]);
   // 이름 변경후 자식사전들 full_name변경
   useEffect(() => {
-    if (data.dic_type == "file") dispatch(modifyList(data.id, data.fullname));
+    // if (data.dic_type == "file") dispatch(modifyList(data.id, data.fullname));
     if (!Child.arr.length) return;
 
     setChild((c) => ({
@@ -197,6 +197,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
       dictControl("put", form.forming(info), pn, setpn);
       setInput((c) => ({ ...c, state: false }));
       data.fullname = [...previewFullname];
+      dispatch(getFileList());
     } catch (err) {
       alert(err);
     }

@@ -2,7 +2,7 @@
 import "../css/home.css";
 
 // middleware
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 // action
@@ -22,17 +22,12 @@ const CurrentFile = ({ data }) => {
 
 export const FileList = () => {
   const { list } = useSelector((state) => state.fileList);
-  // const file = useSelector((state) => state.dict.file);
   let dispatch = useDispatch();
 
   // 리스트 가져오기
   useEffect(() => {
     dispatch(getFileList());
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   console.log("current file id:", file);
-  // }, [file]);
 
   return (
     <ul className="file_list">
