@@ -1,7 +1,12 @@
 import { StatusContext, useStatus } from "../../context/status";
 import { dictService } from "../..";
 
-import { getList, addList, deleteList } from "../reducer/fileListSlice.js";
+import {
+  getList,
+  addList,
+  deleteList,
+  updateList,
+} from "../reducer/fileListSlice.js";
 import { changeId } from "../reducer/dictSlice.js";
 
 export const getFileList = () => {
@@ -9,7 +14,9 @@ export const getFileList = () => {
     try {
       const res = await dictService.getFileList();
       const list = await res.data;
-      dispatch(getList(list));
+      let check = {};
+      list.map((val) => (check[val.id] = true));
+      dispatch(getList({ list, check }));
     } catch (err) {
       alert(err);
     }
@@ -19,10 +26,10 @@ export const getFileList = () => {
 export const addFileList = (info) => {
   return async (dispatch, getState) => {
     let state = getState();
-    let list = state.fileList.list;
+    let { list, check } = state.fileList;
     let id = parseInt(info.get("id"));
 
-    if (list.filter((val) => val.id === id).length) {
+    if (id in check) {
       alert("이미 존재하는 파일입니다");
       return;
     }
@@ -33,6 +40,15 @@ export const addFileList = (info) => {
     } catch (err) {
       alert(err);
     }
+  };
+};
+
+export const modifyList = (id, fullname) => {
+  return async (dispatch, getState) => {
+    let state = getState();
+    let { check } = state.fileList;
+
+    if (id in check) dispatch(updateList({ id, fullname }));
   };
 };
 

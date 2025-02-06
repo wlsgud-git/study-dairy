@@ -13,7 +13,9 @@ const CurrentFile = ({ data }) => {
   return (
     <li className="current_file" title={data.fullname.join("/")}>
       <span>{data.fullname[data.fullname.length - 1]}</span>
-      <button onClick={() => dispatch(deleteFileList(data.id, data.fullname))}>X</button>
+      <button onClick={() => dispatch(deleteFileList(data.id, data.fullname))}>
+        X
+      </button>
     </li>
   );
 };

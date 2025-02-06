@@ -101,6 +101,7 @@
   bottom: 0;
   flex-direction: column;
   border: none;
+  outline: none;
   background-color: var(--theme-background-color);
   width: var(--dictionary-menu-width);
   box-shadow: 0.4px 0.4px 0.4px 0.4px var(--theme-font-color);

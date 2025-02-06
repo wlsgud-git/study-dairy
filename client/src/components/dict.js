@@ -10,7 +10,11 @@ import { useDispatch } from "react-redux";
 import { Rbtree } from "../middleware/dict.js";
 import { Form } from "../middleware/form.js";
 import { changeId } from "../redux/reducer/dictSlice.js";
-import { addFileList, deleteFileList } from "../redux/action/fileListAction.js";
+import {
+  addFileList,
+  deleteFileList,
+  modifyList,
+} from "../redux/action/fileListAction.js";
 // context;
 import { useStatus } from "../context/status";
 
@@ -151,6 +155,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
   }, [Input.state]);
   // 이름 변경후 자식사전들 full_name변경
   useEffect(() => {
+    if (data.dic_type == "file") dispatch(modifyList(data.id, data.fullname));
     if (!Child.arr.length) return;
 
     setChild((c) => ({
@@ -176,11 +181,12 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
       setInput((c) => ({ ...c, state: false, value: data.name }));
       return;
     }
-    data.fullname[data.fullname.length - 1] = Input.value;
+    let previewFullname = [...data.fullname];
+    previewFullname[previewFullname.length - 1] = Input.value;
 
     let info = {
       id: data.id,
-      fullname: [...data.fullname],
+      fullname: [...previewFullname],
       name: Input.value,
       dic_type: data.dic_type,
       old_name: data.name,
@@ -189,6 +195,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
     try {
       dictControl("put", form.forming(info), pn, setpn);
       setInput((c) => ({ ...c, state: false }));
+      data.fullname = [...previewFullname];
     } catch (err) {
       alert(err);
     }
@@ -280,6 +287,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
         <button onMouseDown={MenuEvent}>삭제</button>
       </div>
 
+      {/* child dictionary */}
       <div className="child_box">
         <CreateBox data={data} pn={Child} setpn={setChild} />
         {/* dictionary child */}
