@@ -1,12 +1,18 @@
-import { useStatus } from "../context/status.js";
-import { useRef, useState, useEffect } from "react";
-
-import { Dictionary, CreateBox } from "./dict.js";
-import { Rbtree } from "../middleware/dict.js";
+// css
 import "../css/menu.css";
 
+// middleware
+import { useRef, useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+// other file
+import { useStatus } from "../context/status.js";
+import { Dictionary, CreateBox } from "./dict.js";
+import { Rbtree } from "../middleware/dict.js";
+import { changeId } from "../redux/reducer/dictSlice.js";
+
 export const DictList = () => {
-  let { dictControl, changeFolId } = useStatus();
+  let { dictControl } = useStatus();
+  let dispatch = useDispatch();
   let [Child, setChild] = useState({ node: new Rbtree(), arr: [] });
   let [data, setdata] = useState({ id: 0, fullname: [] });
 
@@ -19,7 +25,10 @@ export const DictList = () => {
   }, []);
 
   return (
-    <div className="dictionary_lists" onMouseDown={() => changeFolId(0)}>
+    <div
+      className="dictionary_lists"
+      onMouseDown={() => dispatch(changeId({ id: data.id, type: true }))}
+    >
       <CreateBox data={data} pn={Child} setpn={setChild} />
       {Child.arr.length
         ? Child.arr.map((val) => (

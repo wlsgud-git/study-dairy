@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useReducer, useRef, memo } from "react";
+// css
+import "../css/dict.css";
 
+// middleware
+import React, { useState, useEffect, useReducer, useRef, memo } from "react";
+import { emitter } from "../middleware/eventBus.js";
+import { useDispatch } from "react-redux";
+
+// use middleware
 import { Rbtree } from "../middleware/dict.js";
 import { Form } from "../middleware/form.js";
-import { emitter } from "../middleware/eventBus.js";
+import { changeId } from "../redux/reducer/dictSlice.js";
 
-import "../css/dict.css";
+// context;
 import { useStatus } from "../context/status";
 
 let form = new Form();
@@ -63,7 +70,7 @@ export const CreateBox = ({ data, pn, setpn }) => {
       style={{ display: Input.state ? "flex" : "none" }}
     >
       <span>
-        <i class={`fa-solid fa-${Input.dic_type ? "folder" : "file"}`}></i>
+        <i className={`fa-solid fa-${Input.dic_type ? "folder" : "file"}`}></i>
       </span>
       <form
         className="create_form"
@@ -86,15 +93,20 @@ export const CreateBox = ({ data, pn, setpn }) => {
 
 // 파일/폴더 박스
 export const Dictionary = React.memo(({ data, pn, setpn }) => {
-  let { dictControl, changeFolId, changeFiId, createBoxControl } = useStatus();
+  let dispatch = useDispatch();
+  let { dictControl, createBoxControl } = useStatus();
 
   // 현재 내 사전 ------------------------------------------------------------------------------
   // 사전 클릭시
   function mouseDownEvent(e) {
     e.stopPropagation();
 
-    data.dic_type == "folder" ? changeFolId(data.id) : changeFiId(data.id);
+    // 사전 ID변환
+    dispatch(
+      changeId({ id: data.id, type: data.dic_type == "file" ? false : true })
+    );
 
+    // 마우스 좌우 클릭시 이벤트
     if (e.buttons == 1) {
       setIsOpen(!IsOpen);
     } else {

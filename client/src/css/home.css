@@ -36,3 +36,26 @@
   display: flex;
   align-items: center;
 }
+
+.current_file {
+  width: var(--list-file-width);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0px 8px;
+  justify-content: space-between;
+  cursor: pointer;
+  color: var(--theme-font-color);
+}
+
+.current_file button {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.current_file button:hover {
+  color: red;
+}

@@ -1,21 +1,28 @@
 import { useStatus } from "../../context/status";
+import { dictService } from "../..";
 
-export const getFileList = () => async (dispatch) => {
-  let { FileListControl } = useStatus();
-  try {
-    const list = await FileListControl("get");
-    console.log("action result:", list);
-  } catch (err) {
-    throw err;
-  }
+import { getList, addList } from "../reducer/fileListSlice.js";
+
+export const getFileList = () => {
+  return async (dispatch) => {
+    try {
+      const res = await dictService.getFileList();
+      const list = await res.data;
+      dispatch(getList(list));
+    } catch (err) {
+      alert(err);
+    }
+  };
 };
 
-// export const getFileList = () => async (dispatch) => {
-//     let { FileListControl } = useStatus();
-//     try {
-//       const list = await FileListControl("get");
-//       console.log("action result:", list);
-//     } catch (err) {
-//       throw err;
-//     }
-//   };
+export const addFileList = (info) => {
+  return async (dispatch) => {
+    try {
+      const res = await dictService.addFileList(info);
+      const data = await res.data;
+      dispatch(addList(data));
+    } catch (err) {
+      alert(err);
+    }
+  };
+};

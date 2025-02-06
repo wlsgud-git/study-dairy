@@ -29,6 +29,8 @@
   /* fileList */
   --filelist-height: 30px;
 
+  --list-file-width: 100px;
+
   /* memo */
   --memo-title-height: 80px;
 }

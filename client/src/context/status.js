@@ -68,7 +68,7 @@ export const StatusProvider = ({ dictService, children }) => {
 
   // 파일리스트 crud
   const FileListControl = useCallback(
-    async (action, data = undefined) => {
+    async (action, info = undefined) => {
       let res;
       let data;
       // 서버 데이터 처리
@@ -78,7 +78,7 @@ export const StatusProvider = ({ dictService, children }) => {
           data = await res.data;
           break;
         default:
-          res = await dictService.getFileList(data);
+          res = await dictService.getFileList(info);
           data = await res.data;
           break;
       }

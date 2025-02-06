@@ -44,4 +44,8 @@ export class DictService {
       body: data,
     });
   }
+
+  async deleteFileList(id) {
+    return this.http.httpFetch(`/fileList?id=${id}`, { method: "delete" });
+  }
 }

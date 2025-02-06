@@ -12,7 +12,7 @@ import { DictService } from "./service/dict.js";
 const baseURL = process.env.REACT_APP_BASEURL;
 
 const httpClient = new HttpClient(baseURL);
-const dictService = new DictService(httpClient);
+export const dictService = new DictService(httpClient);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
