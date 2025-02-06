@@ -32,7 +32,7 @@
 .file_list {
   width: 100%;
   height: var(--filelist-height);
-  border: 1px solid black;
+  border-bottom: 1px solid var(--theme-diff-color);
   display: flex;
   align-items: center;
 }
@@ -54,6 +54,7 @@
   background-color: inherit;
   padding: 3px;
   cursor: pointer;
+  color: var(--theme-font-color);
 }
 
 .current_file button:hover {

@@ -72,3 +72,13 @@ export const addFileList = async (req, res) => {
     throw err;
   }
 };
+
+export const deleteFileList = async (req, res) => {
+  let id = req.query["id"];
+  try {
+    const data = await fileList.deleteFileList(id);
+    return res.status(204).json({ data });
+  } catch (err) {
+    throw err;
+  }
+};

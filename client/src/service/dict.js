@@ -39,7 +39,7 @@ export class DictService {
   }
 
   async addFileList(data) {
-    return this.http.httpFetch(`/dict`, {
+    return this.http.httpFetch(`/fileList`, {
       method: "post",
       body: data,
     });

@@ -9,11 +9,18 @@ const fileListSlice = createSlice({
     getList: (state, lists) => {
       return { ...state, list: [...lists.payload] };
     },
-    addList: (state, value) => {
-      return { ...state, list: [...state.list, value] };
+    addList: (state, data) => {
+      return { ...state, list: [...state.list, data.payload] };
+    },
+
+    deleteList: (state, data) => {
+      return {
+        ...state,
+        list: state.list.filter((val) => val.id !== data.payload),
+      };
     },
   },
 });
 
-export const { getList, addList } = fileListSlice.actions;
+export const { getList, addList, deleteList } = fileListSlice.actions;
 export default fileListSlice.reducer;

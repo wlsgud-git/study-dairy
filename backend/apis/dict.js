@@ -11,6 +11,7 @@ import {
   // 파일 리스트
   getFileList,
   addFileList,
+  deleteFileList,
 } from "../controller/dict.js";
 
 const router = express.Router();
@@ -21,10 +22,11 @@ router.get("/fileList", getFileList);
 router.get("/search", SearchFile); // 검색결과 api
 // post
 router.post("/dict", createDict); // 사전 생성 api
-router.post("fileList", addFileList); // 파일리스트 추가 api
+router.post("/fileList", addFileList); // 파일리스트 추가 api
 // put
 router.put("/dict", updateDict); // 사전 수정 api
 // delete
 router.delete("/dict", deleteDict); // 사전 삭제 api
+router.delete("/fileList", deleteFileList);
 
 export default router;

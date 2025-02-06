@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { Rbtree } from "../middleware/dict.js";
 import { Form } from "../middleware/form.js";
 import { changeId } from "../redux/reducer/dictSlice.js";
-
+import { addFileList, deleteFileList } from "../redux/action/fileListAction.js";
 // context;
 import { useStatus } from "../context/status";
 
@@ -108,7 +108,11 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
 
     // 마우스 좌우 클릭시 이벤트
     if (e.buttons == 1) {
-      setIsOpen(!IsOpen);
+      data.dic_type == "file"
+        ? dispatch(
+            addFileList(form.forming({ id: data.id, fullname: data.fullname }))
+          )
+        : setIsOpen(!IsOpen);
     } else {
       e.preventDefault();
       setMenu(!Menu);
@@ -197,6 +201,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
   useEffect(() => {
     if (Menu) MenuRef.current.focus();
   }, [Menu]);
+
   // 메뉴 버튼 클릭시
   function MenuEvent(e) {
     let event = e.target.innerText;
@@ -207,7 +212,10 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
     if (event == "파일생성" || event == "폴더생성")
       emitter.emit(`create${data.id}`, event == "파일생성" ? false : true);
     else if (event == "이름변경") setInput((c) => ({ ...c, state: true }));
-    else dictControl("delete", data, pn, setpn);
+    else
+      dictControl("delete", data, pn, setpn).then((as) =>
+        dispatch(deleteFileList(data.id, data.fullname))
+      );
   }
 
   return (
