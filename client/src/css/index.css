@@ -7,9 +7,12 @@
 :root {
   /* color */
   --black-transparency: rgba(0, 0, 0, 0.4);
+  --light-blue: #3492eb;
 
   /* menu */
   --menu-width: 240px;
+  --memo-menu-width: 70px;
+  --memo-menu-height: 300px;
 
   /* search */
   --search-box-height: 100px;
@@ -32,7 +35,7 @@
   --list-file-width: 100px;
 
   /* memo */
-  --memo-title-height: 80px;
+  --memo-title-height: 70px;
 }
 
 body {
