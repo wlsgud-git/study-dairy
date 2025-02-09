@@ -1,12 +1,20 @@
-import React, { memo, useEffect, useState } from "react";
+// css
 import "../css/search.css";
-import { useStatus } from "../context/status";
 
-// const Search = React.memo(() => {
-//   return <div className="search_container"></div>;
-// });
+// middleware
+import React, { memo, useEffect, useState } from "react";
+import { useStatus } from "../context/status";
+import { useDispatch } from "react-redux";
+
+// other file
+import { Form } from "../middleware/form.js";
+import { addFileList } from "../redux/action/fileListAction.js";
+import { changeId } from "../redux/reducer/dictSlice.js";
+
+let form = new Form();
 
 export const Search = () => {
+  let dispatch = useDispatch();
   let { searchFile } = useStatus();
   let [Value, setValue] = useState("");
   let [List, setList] = useState({ state: false, arr: [] });
@@ -36,6 +44,13 @@ export const Search = () => {
     }
   }
 
+  function LiMouseDownEvent(data) {
+    dispatch(changeId({ id: data.id, type: false }));
+    dispatch(
+      addFileList(form.forming({ id: data.id, fullname: data.fullname }))
+    );
+  }
+
   return (
     <div className="search_container">
       <div className="search_box">
@@ -58,7 +73,12 @@ export const Search = () => {
         >
           {List.state
             ? List.arr.map((val) => (
-                <li className="file_li" title={val.fullname.join("/")}>
+                <li
+                  key={val.fullname}
+                  className="file_li"
+                  onMouseDown={() => LiMouseDownEvent(val)}
+                  title={val.fullname.join("/")}
+                >
                   {val.name}
                 </li>
               ))

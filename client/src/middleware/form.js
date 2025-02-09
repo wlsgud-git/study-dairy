@@ -18,11 +18,15 @@ export class Form {
   inputValidate(action, pn, value) {
     if (action == "post") {
       // 이름이 없으면 false
-      if (value == "") return false;
+      if (value == "" || value.length > 20) return false;
       // 이미 존재하는 이름이면 false
       return !pn.arr.filter((val) => val.info.name == value).length;
     } else {
-      if (value.new_name == "" || value.new_name == value.old_name)
+      if (
+        value.new_name == "" ||
+        value.new_name.length > 20 ||
+        value.new_name == value.old_name
+      )
         return false;
       return !pn.arr.filter((val) => val.info.name == value.new_name).length;
     }

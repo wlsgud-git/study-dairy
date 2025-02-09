@@ -30,7 +30,7 @@ export const addFileList = (info) => {
     let id = parseInt(info.get("id"));
 
     if (id in check) {
-      alert("이미 존재하는 파일입니다");
+      dispatch(changeId({ id, type: false }));
       return;
     }
     try {

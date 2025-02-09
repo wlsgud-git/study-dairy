@@ -7,12 +7,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 // action
 import { getFileList, deleteFileList } from "../redux/action/fileListAction.js";
+import { changeId } from "../redux/reducer/dictSlice.js";
 
 const CurrentFile = ({ data }) => {
   let dispatch = useDispatch();
+  let file = useSelector((state) => state.dict.file);
   return (
-    <li className="current_file" title={data.fullname.join("/")}>
-      <span>{data.fullname[data.fullname.length - 1]}</span>
+    <li
+      className="current_file"
+      title={data.fullname.join("/")}
+      onClick={() => dispatch(changeId({ id: data.id, type: false }))}
+    >
+      <span style={{ color: file == data.id ? "red" : "black" }}>
+        {data.fullname[data.fullname.length - 1]}
+      </span>
       <button onClick={() => dispatch(deleteFileList(data.id, data.fullname))}>
         X
       </button>

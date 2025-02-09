@@ -80,7 +80,7 @@ class DictData {
   async searchFile(text) {
     try {
       let query = `
-      select fullname, name from file where name like $1`;
+      select id, fullname, name from file where name like $1`;
       let data = [`%${text}%`];
       return await dbPlay(query, data);
     } catch (err) {
