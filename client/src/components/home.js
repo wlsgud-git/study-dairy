@@ -12,7 +12,7 @@ import { store } from "../redux/store.js";
 // component
 import { Memo } from "./memo.js";
 import { Header } from "./header.js";
-import { Menu } from "./menu";
+import { Menu } from "./menu.js";
 import { FileList } from "./fileList.js";
 
 // 홈

@@ -23,6 +23,16 @@ class DictData {
     }
   }
 
+  async getFile(id) {
+    try {
+      let query = `select id, title, content from file where id = $1`;
+      const data = [id];
+      return await dbPlay(query, data);
+    } catch (err) {
+      throw err;
+    }
+  }
+
   // id, fullname , name, dic_type, parent_fullname, folder_id
   async createDict(info) {
     try {

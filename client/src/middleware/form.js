@@ -16,19 +16,18 @@ export class Form {
   }
 
   inputValidate(action, pn, value) {
-    if (action == "post") {
-      // 이름이 없으면 false
-      if (value == "" || value.length > 20) return false;
-      // 이미 존재하는 이름이면 false
-      return !pn.arr.filter((val) => val.info.name == value).length;
-    } else {
-      if (
-        value.new_name == "" ||
-        value.new_name.length > 20 ||
-        value.new_name == value.old_name
-      )
-        return false;
-      return !pn.arr.filter((val) => val.info.name == value.new_name).length;
+    let newVal = action == "post" ? value : value.new_name;
+
+    if (newVal == "") {
+      return { status: false, msg: "사전명이 없습니다" };
     }
+    if (newVal.length > 20) {
+      return { status: false, msg: "사전명은 20자 이내입니다" };
+    }
+    if (pn.arr.filter((val) => val.info.name == newVal).length) {
+      return { status: false, msg: "이미 존재하는 사전명입니다" };
+    }
+
+    return { status: true, msg: "통과" };
   }
 }

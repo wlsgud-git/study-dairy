@@ -28,13 +28,25 @@ export const CreateBox = ({ data, pn, setpn }) => {
     value: "",
     state: false,
     dic_type: false,
+    valid: false,
+    msg: "",
   });
   let inputRef = useRef(null);
 
+  // 인풋 내용바뀔때 valid검사
+  useEffect(() => {
+    // if (Input.value == "") return;
+    let { status, msg } = form.inputValidate("post", pn, Input.value);
+    setInput((c) => ({
+      ...c,
+      valid: status,
+      msg,
+    }));
+  }, [Input.value]);
   // 사전 생성 함수
   function submitEvent(e) {
-    if (!form.inputValidate("post", pn, Input.value)) {
-      setInput((c) => ({ ...c, state: false, value: "" }));
+    if (!form.inputValidate("post", pn, Input.value).status) {
+      setInput((c) => ({ ...c, value: "", state: false }));
       return;
     }
 
@@ -49,7 +61,13 @@ export const CreateBox = ({ data, pn, setpn }) => {
     try {
       dictControl("post", form.forming(info), pn, setpn);
       setInput((c) => ({ ...c, state: false, value: "" }));
-    } catch (err) {}
+    } catch (err) {
+      setInput((c) => ({
+        ...c,
+        valid: false,
+        msg: "서버에 문제가 생겼습니다",
+      }));
+    }
   }
 
   // 폴더 및 파일 생성 클릭시 자식 사전이 open상태가 됨
@@ -72,7 +90,10 @@ export const CreateBox = ({ data, pn, setpn }) => {
     <div
       id={`folder${data.id}`}
       className="create_box"
-      style={{ display: Input.state ? "flex" : "none" }}
+      style={{
+        display: Input.state ? "flex" : "none",
+        border: !Input.valid ? "1px solid red" : "1px solid black",
+      }}
     >
       <span>
         <i className={`fa-solid fa-${Input.dic_type ? "folder" : "file"}`}></i>
@@ -92,6 +113,13 @@ export const CreateBox = ({ data, pn, setpn }) => {
           onBlur={submitEvent}
         />
       </form>
+
+      <div
+        className="error_box"
+        style={{ display: Input.valid ? "none" : "flex" }}
+      >
+        {Input.msg}
+      </div>
     </div>
   );
 };
@@ -149,11 +177,23 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
   let [Input, setInput] = useState({
     state: false,
     value: data.name,
+    valid: true,
+    msg: "",
   });
   // 수정창 활성화 후 포커싱
   useEffect(() => {
     if (Input.state) InputRef.current.focus();
   }, [Input.state]);
+
+  useEffect(() => {
+    if (Input.value == data.name) return;
+    let { status, msg } = form.inputValidate("put", pn, {
+      new_name: Input.value,
+      old_name: data.name,
+    });
+    setInput((c) => ({ ...c, valid: status, msg }));
+  }, [Input.value]);
+
   // 이름 변경후 자식사전들 full_name변경
   useEffect(() => {
     // if (data.dic_type == "file") dispatch(modifyList(data.id, data.fullname));
@@ -177,9 +217,9 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
       !form.inputValidate("put", pn, {
         new_name: Input.value,
         old_name: data.name,
-      })
+      }).status
     ) {
-      setInput((c) => ({ ...c, state: false, value: data.name }));
+      setInput((c) => ({ ...c, value: data.name, state: false, valid: true }));
       return;
     }
     let previewFullname = [...data.fullname];
@@ -234,6 +274,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
         className="dictionary_main"
         title={data.fullname.join("/")}
         onMouseDown={mouseDownEvent}
+        style={{ border: !Input.valid ? "1px solid red" : "none" }}
       >
         {data.dic_type == "folder" ? (
           <span>
@@ -254,6 +295,7 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
             <input
               type="text"
               ref={InputRef}
+              className="dictionary_input"
               style={{ cursor: !Input.state ? "default" : "" }}
               value={Input.value}
               onChange={(e) =>
@@ -312,6 +354,15 @@ export const Dictionary = React.memo(({ data, pn, setpn }) => {
         ) : (
           ""
         )}
+      </div>
+      {/* error shot */}
+      <div
+        className="error_box"
+        style={{
+          display: !Input.valid && Input.value !== data.name ? "flex" : "none",
+        }}
+      >
+        {Input.msg}
       </div>
     </li>
   );

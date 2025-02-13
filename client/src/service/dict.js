@@ -5,10 +5,12 @@ export class DictService {
 
   // 사전
   async getLists(id) {
-    return this.http.httpFetch(`/dict?id=${id}`, {
-      method: "get",
-    });
+    return this.http.httpFetch(`/dict?id=${id}`, { method: "get" });
   }
+  async getFile(id) {
+    return this.http.httpFetch(`/file?id=${id}`, { method: "get" });
+  }
+
   async insertDict(data) {
     return this.http.httpFetch(`/dict`, {
       method: "post",
@@ -33,6 +35,18 @@ export class DictService {
   async search(text) {
     return this.http.httpFetch(`/search?q=${text}`, { method: "get" });
   }
+
+  // 이미지
+  async ImgUpload(file) {
+    return this.http.httpFetch("/img", {
+      method: "post",
+      body: file,
+      headers: {
+        "Content-type": "multipart/form-data",
+      },
+    });
+  }
+
   // 파일 리스트
   async getFileList() {
     return this.http.httpFetch(`/fileList`, { method: "get" });

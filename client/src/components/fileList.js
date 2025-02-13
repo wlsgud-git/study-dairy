@@ -2,7 +2,7 @@
 import "../css/home.css";
 
 // middleware
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 // action
@@ -12,14 +12,19 @@ import { changeId } from "../redux/reducer/dictSlice.js";
 const CurrentFile = ({ data }) => {
   let dispatch = useDispatch();
   let file = useSelector((state) => state.dict.file);
+
   return (
     <li
       className="current_file"
       title={data.fullname.join("/")}
+      style={{
+        borderBottom: file == data.id ? "1px solid #3492eb" : "inherit",
+      }}
       onClick={() => dispatch(changeId({ id: data.id, type: false }))}
     >
-      <span style={{ color: file == data.id ? "red" : "black" }}>
+      <span>
         {data.fullname[data.fullname.length - 1]}
+        {data.id}
       </span>
       <button onClick={() => dispatch(deleteFileList(data.id, data.fullname))}>
         X

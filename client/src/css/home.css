@@ -32,7 +32,7 @@
 .file_list {
   width: 100%;
   height: var(--filelist-height);
-  border-bottom: 1px solid var(--theme-diff-color);
+  /* border-bottom: 1px solid var(--theme-diff-color); */
   display: flex;
   align-items: center;
 }
@@ -45,6 +45,13 @@
   padding: 0px 8px;
   justify-content: space-between;
   cursor: pointer;
+}
+
+.current_file span {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--theme-font-color);
 }
 

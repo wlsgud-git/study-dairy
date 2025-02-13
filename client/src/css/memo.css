@@ -41,6 +41,18 @@
   color: var(--theme-font-color);
 }
 
+.content_img {
+  margin: 6px;
+  display: block;
+  border: 1px solid red;
+  float: left;
+  position: relative;
+}
+
+.img_del_btn {
+  position: absolute;
+}
+
 /* menu */
 .memo_menu_box {
   display: flex;

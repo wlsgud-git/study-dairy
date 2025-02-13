@@ -19,9 +19,13 @@ export const config = {
     port: requires("DB_PORT"),
   },
 
-  // database: {
-  //     name: requires('DB_NAME'),
-  //     password: requires('DB_PASSWORD'),
-  //     host : requires("DB_HOST"),
-  // }
+  aws: {
+    region: requires("REGION"),
+    access_key: requires("ACCESS_KEY"),
+    secret_key: requires("SECRET_KEY"),
+
+    bucket: {
+      memo_img: requires("IMG_BUCKET"),
+    },
+  },
 };

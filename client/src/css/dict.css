@@ -50,6 +50,9 @@
   outline: none;
   background-color: inherit;
   color: var(--theme-font-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* childlist */
@@ -69,6 +72,7 @@
 .create_box {
   width: 100%;
   display: none;
+  position: relative;
   height: var(--dictionary-height);
 }
 
@@ -90,6 +94,22 @@
   outline: none;
   background-color: inherit;
   color: var(--theme-font-color);
+}
+
+.error_box {
+  position: absolute;
+  top: var(--dictionary-height);
+  left: 0;
+  border: 1px solid rgb(186, 22, 22);
+  width: 100%;
+  z-index: 12512;
+  overflow: hidden;
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  background-color: rgb(186, 22, 22);
+  padding: 6px;
 }
 
 /* menu */
