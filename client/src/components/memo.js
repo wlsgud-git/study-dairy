@@ -224,9 +224,7 @@ export const Memo = () => {
         suppressContentEditableWarning
         onBlur={changeContent}
         spellCheck={false}
-      >
-        {Content}
-      </div>
+      ></div>
 
       {/* menu */}
       <div className="memo_menu_box">
@@ -247,7 +245,7 @@ export const Memo = () => {
             <i className="fa-solid fa-image"></i>
           </button>
           <button>
-            <i class="fa-solid fa-font"></i>
+            <i className="fa-solid fa-font"></i>
           </button>
         </div>
       </div>
