@@ -9,76 +9,10 @@ import ReactDOMServer from "react-dom/server";
 // other file
 import { dictService } from "../index.js";
 import { Form } from "../middleware/form.js";
+import { Element } from "../middleware/element.js";
 
 let form = new Form();
-
-const ImgComponent = ({ src }) => {
-  let [ImgSize, setImgSize] = useState({
-    width: 100,
-    height: 100,
-    cursor: "default",
-  });
-  const [StartPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [Size, setSize] = useState({ x: 0, y: 0 });
-  let [Resize, setResize] = useState(false);
-  let [ImgDel, setImgDel] = useState(false);
-
-  function condition(x, y) {
-    return (
-      x <= 10 || x >= ImgSize.width - 10 || y <= 10 || y >= ImgSize.height - 10
-    );
-  }
-
-  // 마우스 무브 이벤트
-  function handleMouseMove(e) {
-    let intX = parseInt(e.clientX - e.target.getBoundingClientRect().left);
-    let intY = parseInt(e.clientY - e.target.getBoundingClientRect().top);
-    if (Resize) {
-      let newWidth = Size.x - StartPos.x + e.pageX;
-      let newHeight = Size.y - StartPos.y + e.pageY;
-      setImgSize({
-        width: newWidth < 50 ? 50 : newWidth,
-        height: newHeight < 50 ? 50 : newHeight,
-      });
-    } else
-      setImgSize((c) => ({
-        ...c,
-        cursor: condition(intX, intY) ? "grab" : "default",
-      }));
-  }
-
-  // 마우스 다운 이벤트
-  function handelMouseDown(e) {
-    e.preventDefault();
-
-    let btn = e.buttons;
-    if (btn == 1) {
-      let intX = parseInt(e.clientX - e.target.getBoundingClientRect().left);
-      let intY = parseInt(e.clientY - e.target.getBoundingClientRect().top);
-      setResize(condition(intX, intY) ? true : false);
-      setSize((c) => ({ ...c, x: ImgSize.width, y: ImgSize.height }));
-      setStartPos((c) => ({ ...c, x: e.pageX, y: e.pageY }));
-    } else {
-      setImgDel(true);
-    }
-  }
-
-  return (
-    <img
-      src={src}
-      onMouseMove={handleMouseMove}
-      onMouseDown={handelMouseDown}
-      onMouseUp={() => setResize(false)}
-      onMouseLeave={() => setResize(false)}
-      className="content_img"
-      style={{
-        width: ImgSize.width,
-        height: ImgSize.height,
-        cursor: Resize ? "grabbing" : ImgSize.cursor,
-      }}
-    />
-  );
-};
+let el = new Element();
 
 export const Memo = () => {
   let memo = document.querySelector(".content_box");
@@ -90,7 +24,6 @@ export const Memo = () => {
   let titleRef = useRef(null);
   let [DB, setDB] = useState({});
   let [Title, setTitle] = useState("");
-  let [Content, setContent] = useState([]);
 
   // 콘텐츠 내용을 array 형태로 변환
   const updateContent = (content) => {
@@ -105,12 +38,16 @@ export const Memo = () => {
 
       if (type == 1) {
         let NodeTag = val.nodeName;
+        arr.push(
+          NodeTag == "IMG" ? el.elementOfImg(val.getAttribute("src")) : val
+        );
       } else {
+        arr.push(el.elementOfSpan(val.textContent));
       }
     });
     return arr;
   };
-
+  // 제목 변경
   const changeTitle = async () => {
     let info = {
       id: file,
@@ -120,21 +57,28 @@ export const Memo = () => {
 
     try {
       let res = await dictService.updateDict(form.forming(info));
-      let data = await res.data[0];
+      let { id, title, content } = await res.data[0];
+
+      setDB((c) => ({ ...c, [file]: { ...c[file], title } }));
+      setTitle(title);
     } catch (err) {
       throw err;
     }
   };
+  // 콘텐츠 변경
   const changeContent = async () => {
-    let content = memo.innerHTML;
     let info = {
       id: file,
-      content,
+      content: memo.innerHTML,
       dic_type: "file",
     };
     try {
       let res = await dictService.updateDict(form.forming(info));
-      let data = await res.data[0];
+      let { id, title, content } = await res.data[0];
+
+      let conArr = updateContent(content);
+
+      setDB((c) => ({ ...c, [file]: { ...c[file], content: conArr } }));
     } catch (err) {
       throw err;
     }
@@ -142,14 +86,24 @@ export const Memo = () => {
 
   useEffect(() => {
     if (!file) return;
+    memo.innerHTML = "";
+
+    if (file in DB) {
+      setTitle(DB[file].title);
+      DB[file].content.map((val) => memo.appendChild(val));
+      return;
+    }
 
     let check = async () => {
       try {
         let res = await dictService.getFile(file);
-        const data = await res.data[0];
+        const { id, title, content } = await res.data[0];
 
-        setTitle(data.title);
-        updateContent(data.content);
+        let conArr = updateContent(content);
+
+        setDB((c) => ({ ...c, [file]: { title, content: conArr } }));
+        setTitle(title);
+        conArr.map((val) => memo.appendChild(val));
       } catch (err) {
         throw err;
       }
@@ -170,25 +124,26 @@ export const Memo = () => {
 
     try {
       const { key, src } = await dictService.ImgUpload(info);
-      setContent((c) => [...c, <ImgComponent src={src} />]);
+      memo.appendChild(el.elementOfImg(src));
+      cursorMoveToLast();
     } catch (err) {
       throw err;
     }
   };
 
   // 이미지 삽입후 커서 위치 이미지 뒤로 보냄
-  // useEffect(() => {
-  //   const input = memoRef.current;
-  //   if (input) {
-  //     const range = document.createRange();
-  //     const selection = document.getSelection();
-  //     range.selectNodeContents(input);
-  //     range.collapse(false);
-  //     selection.removeAllRanges();
-  //     selection.addRange(range);
-  //     input.focus();
-  //   }
-  // }, [Content]);
+  const cursorMoveToLast = () => {
+    const input = contentRef.current;
+    if (input) {
+      const range = document.createRange();
+      const selection = document.getSelection();
+      range.selectNodeContents(input);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      input.focus();
+    }
+  };
 
   let [Menu, setMenu] = useState(false);
   let contentRef = useRef(null);
