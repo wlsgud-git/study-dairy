@@ -22,10 +22,7 @@ const CurrentFile = ({ data }) => {
       }}
       onClick={() => dispatch(changeId({ id: data.id, type: false }))}
     >
-      <span>
-        {data.fullname[data.fullname.length - 1]}
-        {data.id}
-      </span>
+      <span>{data.fullname[data.fullname.length - 1]}</span>
       <button onClick={() => dispatch(deleteFileList(data.id, data.fullname))}>
         X
       </button>

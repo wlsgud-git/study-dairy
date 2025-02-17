@@ -1,7 +1,8 @@
 import { dic } from "../data/dict.js";
 import { fileList } from "../data/fileList.js";
 import { S3FileControl } from "../middleware/aws.js";
-
+// import DOMpurify from "inspector";
+// import from ""
 // 사전
 export async function getDict(req, res, next) {
   try {
@@ -36,7 +37,6 @@ export async function createDict(req, res) {
 
 export async function updateDict(req, res) {
   try {
-    console.log(req.body);
     let data = await dic.updateDict(req.body);
     return res.status(200).json({ data });
   } catch (err) {

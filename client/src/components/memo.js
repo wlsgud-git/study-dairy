@@ -4,8 +4,7 @@ import "../css/memo.css";
 // middleware
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import ReactDOMServer from "react-dom/server";
-
+import DOMpurify from "dompurify";
 // other file
 import { dictService } from "../index.js";
 import { Form } from "../middleware/form.js";
@@ -65,9 +64,10 @@ export const Memo = () => {
   };
   // 콘텐츠 변경
   const changeContent = async () => {
+    let content = DOMpurify.sanitize(memo.innerHTML);
     let info = {
       id: file,
-      content: memo.innerHTML,
+      content,
       dic_type: "file",
     };
     try {
