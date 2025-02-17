@@ -1,69 +1,65 @@
 export class Element {
   constructor() {}
 
-  // let [ImgSize, setImgSize] = useState({
-  //   width: 100,
-  //   height: 100,
-  //   cursor: "default",
-  // });
-
-  // const [StartPos, setStartPos] = useState({ x: 0, y: 0 });
-  // const [Size, setSize] = useState({ x: 0, y: 0 });
-  // let [Resize, setResize] = useState(false);
-  // let [ImgDel, setImgDel] = useState(false);
-
-  // function condition(x, y) {
-  //   return (
-  //     x <= 10 || x >= ImgSize.width - 10 || y <= 10 || y >= ImgSize.height - 10
-  //   );
-  // }
-
-  // // 마우스 무브 이벤트
-  handleMouseMove(e) {
-    let intX = parseInt(e.clientX - e.target.getBoundingClientRect().left);
-    let intY = parseInt(e.clientY - e.target.getBoundingClientRect().top);
-    if (Resize) {
-      let newWidth = Size.x - StartPos.x + e.pageX;
-      let newHeight = Size.y - StartPos.y + e.pageY;
-      setImgSize({
-        width: newWidth < 50 ? 50 : newWidth,
-        height: newHeight < 50 ? 50 : newHeight,
-      });
-    } else
-      setImgSize((c) => ({
-        ...c,
-        cursor: condition(intX, intY) ? "grab" : "default",
-      }));
-  }
-
-  // // 마우스 다운 이벤트
-  handelMouseDown(e) {
-    e.preventDefault();
-    console.log("hihi");
-
-    // let btn = e.buttons;
-    // if (btn == 1) {
-    //   let intX = parseInt(e.clientX - e.target.getBoundingClientRect().left);
-    //   let intY = parseInt(e.clientY - e.target.getBoundingClientRect().top);
-    //   setResize(condition(intX, intY) ? true : false);
-    //   setSize((c) => ({ ...c, x: ImgSize.width, y: ImgSize.height }));
-    //   setStartPos((c) => ({ ...c, x: e.pageX, y: e.pageY }));
-    // } else {
-    //   setImgDel(true);
-    // }
+  changeImgSize(img, imgSize) {
+    img.style.width = `${imgSize.width}px`;
+    img.style.height = `${imgSize.height}px`;
   }
 
   //   이미지 엘리멘트
-  elementOfImg(src) {
-    let width = 100;
-    let height = 100;
-    const img = document.createElement("img");
-    img.src = src;
-    img.className = "content_img";
-    img.style.width = `${width}px`;
-    img.style.height = `${height}px`;
+  elementOfImg({ element = undefined, src = undefined }) {
+    let imgSize = { width: 100, height: 100 };
+    let IMGsrc = src ? src : element.getAttribute("src");
+    if (element) {
+      let st = element.getAttribute("style");
+      st.split(";").map((val) => {
+        let [key, value] = val.split(":").map((s) => s.trim());
 
-    img.addEventListener("mousemove", (e) => this.handelMouseDown(e));
+        if (key == "width") imgSize.width = parseInt(value.replace("px", ""));
+        if (key == "height") imgSize.height = parseInt(value.replace("px", ""));
+      });
+    }
+
+    let size = { x: 0, y: 0 };
+    let startPos = { x: 0, y: 0 };
+    let Resize = false;
+
+    const img = document.createElement("img");
+    img.src = IMGsrc;
+    img.className = "content_img";
+    this.changeImgSize(img, imgSize);
+
+    // 마우스 무브 이벤트
+    img.addEventListener("mousemove", (e) => {
+      img.style.cursor = Resize ? "grabbing" : "grab";
+      if (Resize) {
+        let newWidth = size.x - startPos.x + e.pageX;
+        let newHeight = size.y - startPos.y + e.pageY;
+
+        imgSize = {
+          width: newWidth <= 30 ? 30 : newWidth,
+          height: newHeight <= 30 ? 30 : newHeight,
+        };
+        this.changeImgSize(img, imgSize);
+      }
+    });
+    // 마우스 다운 이벤트
+    img.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      let btn = e.buttons;
+
+      if (btn == 1) {
+        Resize = true;
+        size = { x: imgSize.width, y: imgSize.height };
+        startPos = { x: e.pageX, y: e.pageY };
+      }
+    });
+
+    img.addEventListener("mouseup", () => {
+      console.log("mouse up");
+      Resize = false;
+    });
+
     return img;
   }
 

@@ -38,9 +38,7 @@ export const Memo = () => {
 
       if (type == 1) {
         let NodeTag = val.nodeName;
-        arr.push(
-          NodeTag == "IMG" ? el.elementOfImg(val.getAttribute("src")) : val
-        );
+        arr.push(NodeTag == "IMG" ? el.elementOfImg({ element: val }) : val);
       } else {
         arr.push(el.elementOfSpan(val.textContent));
       }
@@ -124,7 +122,7 @@ export const Memo = () => {
 
     try {
       const { key, src } = await dictService.ImgUpload(info);
-      memo.appendChild(el.elementOfImg(src));
+      memo.appendChild(el.elementOfImg({ src }));
       cursorMoveToLast();
     } catch (err) {
       throw err;
